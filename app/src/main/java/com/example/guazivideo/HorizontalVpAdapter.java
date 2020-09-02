@@ -2,6 +2,7 @@ package com.example.guazivideo;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.guazivideo.player.GuaziPlayer;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
@@ -30,6 +32,9 @@ public class HorizontalVpAdapter extends RecyclerView.Adapter<HorizontalVpAdapte
 
     private List<String> sources;
     private Context mContext;
+    private GuaziPlayer tempPlayer = null;
+    private int tempPosition = 0;
+
 
     HorizontalVpAdapter(Context context) {
         mContext = context;
@@ -43,16 +48,31 @@ public class HorizontalVpAdapter extends RecyclerView.Adapter<HorizontalVpAdapte
         }
     }
 
-    @NonNull
     @Override
     public HorizontalVpViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.i("adapter", "create view holoder");
         return new HorizontalVpViewHolder(LayoutInflater.from(mContext).inflate((R.layout.activity_simple_play), parent, false));
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull HorizontalVpViewHolder holder, int position) {
-        init(holder.videoPlayer, sources.get(position));
+        System.out.println("onbind" + position);
+        if (position  != tempPosition)  {
+            return;
+        }
+        if (tempPlayer != null) {
+            tempPlayer.release();
+        }
+
+        holder.videoPlayer.changeSourceAndPlay(getSource(position));
+        tempPlayer = holder.videoPlayer;
+
+    }
+    public String getSource(int position) {
+        return sources.get(position);
+    }
+    public void setTempPosition(int position) {
+        tempPosition = position;
     }
 
     @Override
@@ -64,7 +84,7 @@ public class HorizontalVpAdapter extends RecyclerView.Adapter<HorizontalVpAdapte
     }
 
     class HorizontalVpViewHolder extends RecyclerView.ViewHolder {
-        StandardGSYVideoPlayer videoPlayer;
+        GuaziPlayer videoPlayer;
 
 
         HorizontalVpViewHolder(@NonNull View itemView) {
@@ -73,20 +93,5 @@ public class HorizontalVpAdapter extends RecyclerView.Adapter<HorizontalVpAdapte
         }
     }
 
-    private void init(StandardGSYVideoPlayer videoPlayer, String source) {
 
-        videoPlayer.setUp(source, true, "测试视频");
-
-
-        //增加title
-        videoPlayer.getTitleTextView().setVisibility(View.VISIBLE);
-        //设置返回键
-        videoPlayer.getBackButton().setVisibility(View.INVISIBLE);
-
-
-        videoPlayer.setIsTouchWiget(true);
-
-        videoPlayer.startPlayLogic();
-
-    }
 }
