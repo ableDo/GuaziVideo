@@ -69,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
             switch (msg.what){
                 case TIMER:
                     setSystemUIVisible(false);
+
+                    if (flag) {
+                        Message message = mHandler.obtainMessage(TIMER);
+                        mHandler.sendMessageDelayed(message, 1000);
+                    }
                     break;
                 default:
                     break;
