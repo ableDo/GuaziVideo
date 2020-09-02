@@ -14,7 +14,10 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
+import com.example.guazivideo.gestureinterface.DetectGesture;
+import com.example.guazivideo.gestureinterface.GestureHandler;
 import com.example.guazivideo.player.GuaziPlayer;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
@@ -27,13 +30,21 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager2 viewPager2;
     private HorizontalVpAdapter adapter;
     private UnVisibleHandler unVisibleHandler;
+
+    private void startGestureDetect(){
+        new DetectGesture().startGestureDetect(new GestureHandler(){
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                Toast.makeText(MainActivity.this, "123", Toast.LENGTH_LONG).show();
+            }
+        }, MainActivity.this);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        startGestureDetect();
         OpeningStartAnimation openingStartAnimation = new OpeningStartAnimation.Builder(this)
                 .setDrawStategy(new NormalDrawStrategy()) //设置动画效果
                 .setAnimationFinishTime(1000)

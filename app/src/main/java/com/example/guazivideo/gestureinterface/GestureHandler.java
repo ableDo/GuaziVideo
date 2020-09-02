@@ -1,7 +1,9 @@
 package com.example.guazivideo.gestureinterface;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 

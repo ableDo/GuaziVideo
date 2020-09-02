@@ -1,7 +1,9 @@
 package com.example.guazivideo.gestureinterface;
 
+import com.example.guazivideo.MainActivity;
+
 public interface DetectGestureInterface {
 
-    void startGestureDetect(GestureHandler handler);
+    public void startGestureDetect(GestureHandler handler, MainActivity obj);
 
 }
