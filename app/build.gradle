@@ -1,0 +1,51 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+
+
+    defaultConfig {
+        applicationId "com.example.guazivideo"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'site.gemus:openingstartanimation:1.0.0' //在gradle中导入项目
+
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation 'com.shuyu:GSYVideoPlayer:7.1.5'
+    implementation 'com.shuyu:GSYVideoPlayer-exo2:7.1.5'
+
+//根据你的需求ijk模式的so
+    implementation 'com.shuyu:gsyVideoPlayer-armv5:7.1.5'
+    implementation 'com.shuyu:gsyVideoPlayer-armv7a:7.1.5'
+    implementation 'com.shuyu:gsyVideoPlayer-arm64:7.1.5'
+    implementation 'com.shuyu:gsyVideoPlayer-x64:7.1.5'
+    implementation 'com.shuyu:gsyVideoPlayer-x86:7.1.5'
+}
