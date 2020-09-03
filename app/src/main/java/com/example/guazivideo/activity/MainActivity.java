@@ -50,7 +50,15 @@ public class MainActivity extends AppCompatActivity {
     private boolean isGestureOpen = true;
     private boolean isGesturesolving = false;
 
-
+    Toast mytoast;
+    private void showToast(String text) {
+        if (mytoast == null) {
+            mytoast = Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT);
+        }  else {
+            mytoast.setText(text);
+        }
+        mytoast.show();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +131,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 Log.i("Gesture", "favor");
-                Toast.makeText(MainActivity.this, "喜欢", Toast.LENGTH_LONG).show();
+                showToast("喜欢");
+                //Toast.makeText(MainActivity.this, "喜欢", Toast.LENGTH_LONG).show();
                 gestureFavor();
                 return super.onDoubleTap(e);
             }
@@ -150,25 +159,29 @@ public class MainActivity extends AppCompatActivity {
                 //右滑
                 if (velocityX > 0 && Math.abs(velocityX) > 2 * Math.abs(velocityY)) {
                     Log.i("Gesture", "right");
-                    Toast.makeText(MainActivity.this, "右滑", Toast.LENGTH_LONG).show();
+                    showToast("右滑");
+                   // Toast.makeText(MainActivity.this, "右滑", Toast.LENGTH_LONG).show();
                     gestureRight();
                 }
                 //下滑
                 if (velocityY > 0 && Math.abs(velocityY) > 2 * Math.abs(velocityX)) {
                     Log.i("Gesture", "down");
-                    Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
+                    showToast("下滑");
+                    //Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
                     gestureDown();
                 }
                 //左滑
                 if (velocityX < 0 && Math.abs(velocityX) > 2 * Math.abs(velocityY)) {
                     Log.i("Gesture", "left");
-                    Toast.makeText(MainActivity.this, "左滑", Toast.LENGTH_LONG).show();
+                    showToast("左滑");
+                  //  Toast.makeText(MainActivity.this, "左滑", Toast.LENGTH_LONG).show();
                     getstureLeft();
                 }
                 //上滑
                 if (velocityY < 0 && Math.abs(velocityY) > 2 * Math.abs(velocityX)) {
                     Log.i("Gesture", "up");
-                    Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
+                    showToast("上滑");
+                    //Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
                     gestureUp();
                 }
                 return true;
@@ -359,11 +372,13 @@ public class MainActivity extends AppCompatActivity {
         new DetectGesture().startGestureDetect(new GestureHandler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
+                showToast(msg.obj.toString());
                 switch (msg.what) {
                     case GestureHandler.GESTURE_DOWN: {
                         if (isGestureOpen) {
                             Log.i("Gesture", "down");
-                            Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
+
+                            //Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
                             gestureDown();
                         }
                         break;
@@ -371,21 +386,23 @@ public class MainActivity extends AppCompatActivity {
                     case GestureHandler.GESTURE_UP: {
                         if (isGestureOpen) {
                             Log.i("Gesture", "up");
-                            Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
+                            //showToast("上滑");
+                            //Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
                             gestureUp();
                         }
                         break;
                     }
                     case GestureHandler.GESTURE_OK: {
                         Log.i("Gesture", "ok");
-                        Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
+                        //showToast("ok");
+                        //Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
                         gestureOK();
                         break;
                     }
                     case GestureHandler.GESTURE_PALM: {
                         if (isGestureOpen) {
                             Log.i("Gesture", "palm");
-                            Toast.makeText(MainActivity.this, "palm", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(MainActivity.this, "palm", Toast.LENGTH_LONG).show();
                             gesturePalm();
                         }
                         break;
