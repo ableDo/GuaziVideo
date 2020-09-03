@@ -101,7 +101,7 @@ public abstract class CameraActivity extends AppCompatActivity
   private Spinner deviceSpinner;
   private TextView threadsTextView;
 
-  private Model model = Model.QUANTIZED_EFFICIENTNET;
+  private Model model = Model.FLOAT_MOBILENET;
   private Device device = Device.CPU;
   private int numThreads = -1;
 
@@ -127,7 +127,14 @@ public abstract class CameraActivity extends AppCompatActivity
     }
   }
   public void endGestureDetect(){
-
+    handlerThread.quitSafely();
+    try {
+      handlerThread.join();
+      handlerThread = null;
+      handler = null;
+    } catch (final InterruptedException e) {
+      LOGGER.e(e, "Exception!");
+    }
   }
 
   @Override
@@ -453,7 +460,7 @@ public abstract class CameraActivity extends AppCompatActivity
   }
 
   private String chooseCamera() {
-    final CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+    final CameraManager manager = (CameraManager) ui_acivity.getSystemService(Context.CAMERA_SERVICE);
     try {
       for (final String cameraId : manager.getCameraIdList()) {
         final CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
@@ -517,7 +524,7 @@ public abstract class CameraActivity extends AppCompatActivity
           new LegacyCameraConnectionFragment(this, ui_layout, getDesiredPreviewFrameSize());
     }
 
-    getFragmentManager().beginTransaction().replace(ui_id, fragment).commit();
+    ui_acivity.getFragmentManager().beginTransaction().replace(ui_id, fragment).commit();
   }
 
   protected void fillBytes(final Plane[] planes, final byte[][] yuvBytes) {
@@ -540,7 +547,7 @@ public abstract class CameraActivity extends AppCompatActivity
   }
 
   protected int getScreenOrientation() {
-    switch (getWindowManager().getDefaultDisplay().getRotation()) {
+    switch (ui_acivity.getWindowManager().getDefaultDisplay().getRotation()) {
       case Surface.ROTATION_270:
         return 270;
       case Surface.ROTATION_180:

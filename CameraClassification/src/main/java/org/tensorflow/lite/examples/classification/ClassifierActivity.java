@@ -69,7 +69,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
   public void onPreviewSizeChosen(final Size size, final int rotation) {
     final float textSizePx =
         TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
+            TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, ui_acivity.getResources().getDisplayMetrics());
     borderedText = new BorderedText(textSizePx);
     borderedText.setTypeface(Typeface.MONOSPACE);
 
@@ -130,12 +130,15 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
                   new Runnable() {
                     @Override
                     public void run() {
+                      /*
                       showResultsInBottomSheet(results);
                       showFrameInfo(previewWidth + "x" + previewHeight);
                       showCropInfo(imageSizeX + "x" + imageSizeY);
                       showCameraResolution(cropSize + "x" + cropSize);
                       showRotationInfo(String.valueOf(sensorOrientation));
                       showInference(lastProcessingTimeMs + "ms");
+
+                       */
                     }
                   });
             }
@@ -174,7 +177,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
     try {
       LOGGER.d(
           "Creating classifier (model=%s, device=%s, numThreads=%d)", model, device, numThreads);
-      classifier = Classifier.create(this, model, device, numThreads);
+      classifier = Classifier.create(ui_acivity, model, device, numThreads);
     } catch (IOException e) {
       LOGGER.e(e, "Failed to create classifier.");
     }

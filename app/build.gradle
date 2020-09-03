@@ -17,7 +17,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
+    aaptOptions {
+        noCompress "tflite"
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -28,8 +30,9 @@ android {
 }
 
 dependencies {
+
     implementation project(path: ':CameraClassification')
-    compile 'com.github.bumptech.glide:glide:3.8.0'
+    implementation 'com.github.bumptech.glide:glide:3.8.0'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'site.gemus:openingstartanimation:1.0.0' //在gradle中导入项目
