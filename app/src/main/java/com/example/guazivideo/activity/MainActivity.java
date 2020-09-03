@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.guazivideo.adapter.HorizontalVpAdapter;
 import com.example.guazivideo.R;
+import com.example.guazivideo.entity.Changer;
 import com.example.guazivideo.entity.Gesture;
 import com.example.guazivideo.entity.VideoInfo;
 import com.example.guazivideo.gestureinterface.DetectGesture;
@@ -437,7 +438,7 @@ public class MainActivity extends BaseActivity {
         public void run() {
             // TODOAuto-generated method stub
 
-            handler.postDelayed(this,  1000);//设置延迟时间，此处是5秒
+            handler.postDelayed(this, 1000);//设置延迟时间，此处是5秒
             //需要执行的代码
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://39.106.7.119:8080/api/v1/user/")  //要访问的主机地址，注意以 /（斜线） 结束，不然可能会抛出异常
@@ -452,7 +453,7 @@ public class MainActivity extends BaseActivity {
                 @Override
                 public void onResponse(Call<Gesture> call, Response<Gesture> response) {
                     Gesture gesture = response.body();
-                    Log.i("gesture" , gesture.gesture + " ");
+                    Log.i("gesture", gesture.gesture + " ");
                     switch (gesture.gesture) {
                         case GestureHandler.GESTURE_UP: {
                             Log.i("Gesture", "up");
@@ -486,7 +487,27 @@ public class MainActivity extends BaseActivity {
                     t.printStackTrace();
                 }
             });
+
+
+            Call<Changer> call1 = service.getChangerStates();
+
+            call1.enqueue(new Callback<Changer>() {
+                @Override
+                public void onResponse(Call<Changer> call, Response<Changer> response) {
+                    Changer changer = response.body();
+                    Log.i("gesture" , changer.isChangerOpen + " ");
+                    isGestureOpen = changer.isChangerOpen;
+                }
+
+                @Override
+                public void onFailure(Call<Changer> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+
         }
+
+
 
     };
 
