@@ -107,6 +107,14 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
 
 
 
+              Message message = Message.obtain();
+              message.what = GestureHandler.GESTURE_UP;
+              //gethandler().sendMessage(message);
+              try {
+                Thread.sleep(2000);
+              } catch (InterruptedException e) {
+                e.printStackTrace();
+              }
 
               getActivity().runOnUiThread(
                   new Runnable() {
@@ -123,13 +131,13 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
                        */
 
 
-                      Message message = Message.obtain();
-                      message.obj = (Object) results.get(0).getTitle();
-                      gethandler().sendMessage(message);
+
 
 
                     }
                   });
+
+
             }
             readyForNextImage();
           }

@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 
 public class GestureHandler extends Handler {
 
+    public static final int GESTURE_NORMAL = 1000;
     public static final int GESTURE_UP = 1001;
     public static final int GESTURE_DOWN = 1002;
     public static final int GESTURE_RIGHT = 1003;

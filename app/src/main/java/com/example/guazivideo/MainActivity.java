@@ -4,6 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import site.gemus.openingstartanimation.NormalDrawStrategy;
 import site.gemus.openingstartanimation.OpeningStartAnimation;
 
@@ -31,14 +36,32 @@ public class MainActivity extends AppCompatActivity {
     private HorizontalVpAdapter adapter;
     private UnVisibleHandler unVisibleHandler;
 
-    private void startGestureDetect(){
-        new DetectGesture().startGestureDetect(new GestureHandler(){
+    private void startGestureDetect() {
+        new DetectGesture().startGestureDetect(new GestureHandler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
-                Toast.makeText(MainActivity.this, "123", Toast.LENGTH_LONG).show();
+                switch (msg.what) {
+                    case GestureHandler.GESTURE_DOWN: {
+                        gestureDown();
+                        break;
+                    }
+                    case GestureHandler.GESTURE_UP: {
+                        gestureUp();
+                        break;
+                    }
+                    case GestureHandler.GESTURE_FAVOR: {
+                        gestureFavor();
+                        break;
+                    }
+                    case GestureHandler.GESTURE_RIGHT: {
+                        gestureRight();
+                        break;
+                    }
+                }
             }
         }, MainActivity.this);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
         setTimer();
         initViewPager();
         initDetector();
+        handler.postDelayed(task, 2000);//立即调用
+
 
     }
 
@@ -74,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
-                System.out.println("hha " + recyclerView.getChildCount()  + " " + position);
+                System.out.println("hha " + recyclerView.getChildCount() + " " + position);
                 GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
                 videoPlayer.changeSourceAndPlay(adapter.getSource(position));
 
@@ -87,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onDoubleTap(MotionEvent e) {
+                gestureFavor();
                 return super.onDoubleTap(e);
             }
 
@@ -111,17 +137,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("MyGesture", "onFling" + velocityX + " " + velocityY);
                 //右滑
                 if (velocityX > 0 && Math.abs(velocityX) > 2 * Math.abs(velocityY)) {
-                    Log.i("Gesture", "right");
+                    gestureRight();
                 }
                 //下滑
                 if (velocityY > 0 && Math.abs(velocityY) > 2 * Math.abs(velocityX)) {
-                    Log.i("Gesture", "down");
-                    if (viewPager2.getCurrentItem() > 0) {
-                        adapter.setTempPosition(viewPager2.getCurrentItem() - 1);
-                        viewPager2.setCurrentItem(viewPager2.getCurrentItem() - 1, true);
-                        adapter.notifyDataSetChanged();
-
-                    }
+                    gestureDown();
                 }
                 //左滑
                 if (velocityX < 0 && Math.abs(velocityX) > 2 * Math.abs(velocityY)) {
@@ -130,12 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //上滑
                 if (velocityY < 0 && Math.abs(velocityY) > 2 * Math.abs(velocityX)) {
-                    Log.i("Gesture", "up");
-                    if (adapter.getItemCount() > viewPager2.getCurrentItem() + 1) {
-                        adapter.setTempPosition(viewPager2.getCurrentItem() + 1);
-                        viewPager2.setCurrentItem(viewPager2.getCurrentItem() +  1, true);
-                        adapter.notifyDataSetChanged();
-                    }
+                    gestureUp();
                 }
                 return true;
             }
@@ -169,13 +184,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setTimer(){
+    private void setTimer() {
         unVisibleHandler = new UnVisibleHandler(MainActivity.this);
         Message message = unVisibleHandler.obtainMessage(TIMER);     // Message
         unVisibleHandler.sendMessageDelayed(message, 1000);
     }
 
-    private static class  UnVisibleHandler extends Handler {
+    private static class UnVisibleHandler extends Handler {
 
         private final WeakReference<MainActivity> mActivity;
 
@@ -189,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
             if (mActivity.get() == null) {
                 return;
             }
-            switch (msg.what){
+            switch (msg.what) {
                 case TIMER:
                     mActivity.get().setSystemUIVisible(false);
 
@@ -202,9 +217,11 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         }
-    };
+    }
 
-    private void stopTimer(){
+    ;
+
+    private void stopTimer() {
         flag = false;
     }
 
@@ -213,4 +230,90 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         unVisibleHandler.removeCallbacksAndMessages(null);
     }
+
+    private void gestureFavor() {
+        Log.i("Gesture", "favor");
+        Toast.makeText(MainActivity.this, "喜欢", Toast.LENGTH_LONG);
+
+    }
+
+    private void gestureUp() {
+        Log.i("Gesture", "up");
+        if (adapter.getItemCount() > viewPager2.getCurrentItem() + 1) {
+            adapter.setTempPosition(viewPager2.getCurrentItem() + 1);
+            viewPager2.setCurrentItem(viewPager2.getCurrentItem() + 1, true);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void gestureDown() {
+        Log.i("Gesture", "down");
+        if (viewPager2.getCurrentItem() > 0) {
+            adapter.setTempPosition(viewPager2.getCurrentItem() - 1);
+            viewPager2.setCurrentItem(viewPager2.getCurrentItem() - 1, true);
+            adapter.notifyDataSetChanged();
+
+        }
+    }
+
+    private void gestureRight() {
+        Log.i("Gesture", "right");
+        Toast.makeText(MainActivity.this, "右滑", Toast.LENGTH_LONG);
+
+
+    }
+
+
+    private Handler handler = new Handler();
+
+    private Runnable task = new Runnable() {
+        public void run() {
+            // TODOAuto-generated method stub
+            Log.i("gesture" ,  " ");
+
+            handler.postDelayed(this,  1000);//设置延迟时间，此处是5秒
+            //需要执行的代码
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://39.106.7.119:8080/api/v1/user/")  //要访问的主机地址，注意以 /（斜线） 结束，不然可能会抛出异常
+                    .addConverterFactory(GsonConverterFactory.create()) //添加Gson
+                    .build();
+
+            WebService service = retrofit.create(WebService.class);
+
+            Call<Gesture> call = service.getGesture();
+
+            call.enqueue(new Callback<Gesture>() {
+                @Override
+                public void onResponse(Call<Gesture> call, Response<Gesture> response) {
+                    Gesture gesture = response.body();
+                    Log.i("gesture" , gesture.gesture + " ");
+                    switch (gesture.gesture) {
+                        case GestureHandler.GESTURE_UP: {
+                            gestureUp();
+                            break;
+                        }
+                        case GestureHandler.GESTURE_DOWN: {
+                            gestureDown();
+                            break;
+                        }
+                        case GestureHandler.GESTURE_FAVOR: {
+                            gestureFavor();
+                            break;
+                        }
+                        case GestureHandler.GESTURE_RIGHT: {
+                            gestureRight();
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Gesture> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }
+
+    };
+
 }

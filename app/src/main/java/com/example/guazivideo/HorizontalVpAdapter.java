@@ -20,14 +20,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-/**
- * CreateTime: 2020/1/15 15:06
- * Author: hxd
- * Content:
- * UpdateTime:
- * UpdateName;
- * UpdateContent:
- */
+
 public class HorizontalVpAdapter extends RecyclerView.Adapter<HorizontalVpAdapter.HorizontalVpViewHolder> {
 
     private List<String> sources;
