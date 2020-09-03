@@ -45,19 +45,20 @@ public class MainActivity extends AppCompatActivity {
     private UnVisibleHandler unVisibleHandler;
     private static final int START_TIME = 4000;
 
-
     private Toast mytoast;
+
+    private void showToast(String text) {
+        if (mytoast == null) {
+            mytoast = Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT);
+        }  else {
+            mytoast.setText(text);
+        }
+        mytoast.show();
+    }
     private void startGestureDetect() {
         new DetectGesture().startGestureDetect(new GestureHandler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
-
-                if (mytoast == null) {
-                    mytoast = Toast.makeText(MainActivity.this, msg.obj.toString() + " " + msg.what, Toast.LENGTH_SHORT);
-                }  else {
-                    mytoast.setText(msg.obj.toString() + " " + msg.what);
-                }
-                mytoast.show();
                 switch (msg.what) {
                     case GestureHandler.GESTURE_DOWN: {
                         gestureDown();
@@ -274,7 +275,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void gestureFavor() {
         Log.i("Gesture", "favor");
-        Toast.makeText(MainActivity.this, "喜欢", Toast.LENGTH_LONG).show();
+        showToast("喜欢");
+        //Toast.makeText(MainActivity.this, "喜欢", Toast.LENGTH_LONG).show();
 
     }
 
@@ -285,7 +287,8 @@ public class MainActivity extends AppCompatActivity {
             viewPager2.setCurrentItem(viewPager2.getCurrentItem() + 1, true);
             adapter.notifyDataSetChanged();
         }
-        Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
+        showToast("上滑");
+       // Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
 
     }
 
@@ -297,9 +300,12 @@ public class MainActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
 
         }
-        Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
+        showToast("下滑");
+        //Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
 
     }
+
+
 
     private void gestureRight() {
         Log.i("Gesture", "right");
