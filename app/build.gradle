@@ -12,11 +12,16 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resConfigs "en", "zh-rCN"
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     aaptOptions {
         noCompress "tflite"
     }
@@ -49,11 +54,7 @@ dependencies {
     implementation 'com.shuyu:GSYVideoPlayer-exo2:7.1.5'
 
 //根据你的需求ijk模式的so
-    implementation 'com.shuyu:gsyVideoPlayer-armv5:7.1.5'
     implementation 'com.shuyu:gsyVideoPlayer-armv7a:7.1.5'
-    implementation 'com.shuyu:gsyVideoPlayer-arm64:7.1.5'
-    implementation 'com.shuyu:gsyVideoPlayer-x64:7.1.5'
-    implementation 'com.shuyu:gsyVideoPlayer-x86:7.1.5'
 
 
     //implementation 'androidx.appcompat:appcompat:1.0.0'

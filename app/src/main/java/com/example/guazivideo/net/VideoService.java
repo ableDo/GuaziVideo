@@ -1,4 +1,4 @@
-package com.example.guazivideo.request;
+package com.example.guazivideo.net;
 
 import com.example.guazivideo.entity.VideoInfo;
 

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.guazivideo.R;
+import com.example.guazivideo.mvp.base.BaseActivity;
 import com.example.guazivideo.entity.VideoInfo;
 import com.example.guazivideo.gestureinterface.DetectGesture;
 import org.tensorflow.lite.examples.classification.GestureInterface.GestureHandler;
@@ -26,22 +27,6 @@ import org.tensorflow.lite.examples.classification.GestureInterface.GestureHandl
 
 public class MoreInformationActivity extends BaseActivity {
     DetectGesture myDetectGesture = null;
-
-    private void setSystemUIVisible(boolean show) {
-        if (show) {
-            int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-            uiFlags |= 0x00001000;
-            getWindow().getDecorView().setSystemUiVisibility(uiFlags);
-        } else {
-            int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN;
-            uiFlags |= 0x00001000;
-            getWindow().getDecorView().setSystemUiVisibility(uiFlags);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +64,16 @@ public class MoreInformationActivity extends BaseActivity {
         textView_short_title.setText(videoInfo.getShort_title());
         textView_movie_name.setText(videoInfo.getMovie_name());
         textView_movie_desc.setText(videoInfo.getMovie_desc());
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_more_information;
+    }
+
+    @Override
+    public void initView() {
+
     }
 
     @Override
