@@ -343,6 +343,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, MoreInformationActivity.class);
             intent.putExtra("video_info", adapter.getVideoInfoByPosition(viewPager2.getCurrentItem()));
             startActivity(intent);
+            overridePendingTransition(R.anim.translate_in,R.anim.translate_out);
         }
     }
 
