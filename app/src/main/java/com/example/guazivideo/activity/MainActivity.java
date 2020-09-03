@@ -9,6 +9,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import site.gemus.openingstartanimation.LineDrawStrategy;
 import site.gemus.openingstartanimation.NormalDrawStrategy;
 import site.gemus.openingstartanimation.OpeningStartAnimation;
 
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         startGestureDetect();
         OpeningStartAnimation openingStartAnimation = new OpeningStartAnimation.Builder(this)
-                .setDrawStategy(new NormalDrawStrategy()) //设置动画效果
+                .setDrawStategy(new LineDrawStrategy()) //设置动画效果
                 .setAnimationFinishTime(START_TIME)
                 .create();
         openingStartAnimation.show(this);
@@ -296,11 +297,12 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Gesture", "right");
         Toast.makeText(MainActivity.this, "右滑", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(MainActivity.this, MoreInformationActivity.class);
+        intent.putExtra("video_info", adapter.getVideoInfoByPosition(viewPager2.getCurrentItem()));
         startActivity(intent);
     }
 
     private void getstureLeft() {
-        Log.i("Gesture", "right");
+        Log.i("Gesture", "left");
         Toast.makeText(MainActivity.this, "左滑", Toast.LENGTH_LONG).show();
 
     }

@@ -57,9 +57,14 @@ public class HorizontalVpAdapter extends RecyclerView.Adapter<HorizontalVpAdapte
         tempPlayer = holder.videoPlayer;
 
     }
-    public String getVideoUrl(int position) {
+    private String getVideoUrl(int position) {
         return sources.get(position).getShort_video_info().getVideo_1().getUrl();
     }
+
+    public VideoInfo getVideoInfoByPosition(int position) {
+        return sources.get(position);
+    }
+
     public void setTempPosition(int position) {
         tempPosition = position;
     }

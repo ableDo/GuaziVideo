@@ -1,6 +1,8 @@
 package com.example.guazivideo.entity;
 
-public class VideoInfo {
+import java.io.Serializable;
+
+public class VideoInfo implements Serializable {
     String movie_id;
     String short_title;
     String short_author;
