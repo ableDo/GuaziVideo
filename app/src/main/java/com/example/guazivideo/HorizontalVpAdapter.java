@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.guazivideo.entity.MovieVideoInfo;
 import com.example.guazivideo.entity.Video;
 import com.example.guazivideo.entity.VideoInfo;
 import com.example.guazivideo.player.GuaziPlayer;
@@ -52,13 +53,16 @@ public class HorizontalVpAdapter extends RecyclerView.Adapter<HorizontalVpAdapte
             tempPlayer.release();
         }
 
-        holder.videoPlayer.changeSourceAndPlay(getVideoUrl(position));
+        holder.videoPlayer.changeSourceAndPlay(getVideoUrl(position), getTitle(position), false);
         Log.i(TAG, getVideoUrl(position));
         tempPlayer = holder.videoPlayer;
 
     }
     private String getVideoUrl(int position) {
         return sources.get(position).getShort_video_info().getVideo_1().getUrl();
+    }
+    private String getTitle(int position) {
+        return sources.get(position).getShort_title();
     }
 
     public VideoInfo getVideoInfoByPosition(int position) {
@@ -67,6 +71,10 @@ public class HorizontalVpAdapter extends RecyclerView.Adapter<HorizontalVpAdapte
 
     public void setTempPosition(int position) {
         tempPosition = position;
+    }
+
+    public MovieVideoInfo getFullVideo(int position) {
+        return sources.get(position).getMovie_video_info();
     }
 
     @Override

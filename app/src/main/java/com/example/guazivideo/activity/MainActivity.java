@@ -13,6 +13,7 @@ import site.gemus.openingstartanimation.LineDrawStrategy;
 import site.gemus.openingstartanimation.NormalDrawStrategy;
 import site.gemus.openingstartanimation.OpeningStartAnimation;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,36 +45,36 @@ public class MainActivity extends AppCompatActivity {
     private HorizontalVpAdapter adapter;
     private UnVisibleHandler unVisibleHandler;
     private static final int START_TIME = 4000;
+    private boolean isFullVideo = false;
+    private boolean isGestureOpen = true;
 
-    private Toast mytoast;
 
-    private void showToast(String text) {
-        if (mytoast == null) {
-            mytoast = Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT);
-        }  else {
-            mytoast.setText(text);
-        }
-        mytoast.show();
-    }
+    @SuppressLint("HandlerLeak")
     private void startGestureDetect() {
         new DetectGesture().startGestureDetect(new GestureHandler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 switch (msg.what) {
                     case GestureHandler.GESTURE_DOWN: {
-                        gestureDown();
+                        if (isGestureOpen) {
+                            gestureDown();
+                        }
                         break;
                     }
                     case GestureHandler.GESTURE_UP: {
-                        gestureUp();
+                        if (isGestureOpen) {
+                            gestureUp();
+                        }
                         break;
                     }
-                    case GestureHandler.GESTURE_FAVOR: {
-                        gestureFavor();
+                    case GestureHandler.GESTURE_OK: {
+                        gestureOK();
                         break;
                     }
-                    case GestureHandler.GESTURE_RIGHT: {
-                        gestureRight();
+                    case GestureHandler.GESTURE_PALM: {
+                        if (isGestureOpen) {
+                            gesturePalm();
+                        }
                         break;
                     }
                 }
@@ -275,33 +276,43 @@ public class MainActivity extends AppCompatActivity {
 
     private void gestureFavor() {
         Log.i("Gesture", "favor");
-        showToast("喜欢");
-        //Toast.makeText(MainActivity.this, "喜欢", Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.this, "喜欢", Toast.LENGTH_LONG).show();
+
+    }
+    private void gestureOK() {
+        Log.i("Gesture", "ok");
+        Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
+
+    }
+    private void gesturePalm() {
+        Log.i("Gesture", "palm");
+        Toast.makeText(MainActivity.this, "palm", Toast.LENGTH_LONG).show();
 
     }
 
     private void gestureUp() {
         Log.i("Gesture", "up");
-        if (adapter.getItemCount() > viewPager2.getCurrentItem() + 1) {
+        Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
+
+        if (adapter.getItemCount() > viewPager2.getCurrentItem() + 1 && !isFullVideo) {
             adapter.setTempPosition(viewPager2.getCurrentItem() + 1);
             viewPager2.setCurrentItem(viewPager2.getCurrentItem() + 1, true);
             adapter.notifyDataSetChanged();
         }
-        showToast("上滑");
-       // Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
 
     }
 
     private void gestureDown() {
+
         Log.i("Gesture", "down");
-        if (viewPager2.getCurrentItem() > 0) {
+        Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
+
+        if (viewPager2.getCurrentItem() > 0 && !isFullVideo) {
             adapter.setTempPosition(viewPager2.getCurrentItem() - 1);
             viewPager2.setCurrentItem(viewPager2.getCurrentItem() - 1, true);
             adapter.notifyDataSetChanged();
 
         }
-        showToast("下滑");
-        //Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
 
     }
 
@@ -310,15 +321,38 @@ public class MainActivity extends AppCompatActivity {
     private void gestureRight() {
         Log.i("Gesture", "right");
         Toast.makeText(MainActivity.this, "右滑", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(MainActivity.this, MoreInformationActivity.class);
-        intent.putExtra("video_info", adapter.getVideoInfoByPosition(viewPager2.getCurrentItem()));
-        startActivity(intent);
+        if (isFullVideo) {
+            RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
+            GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
+            VideoInfo videoInfo = adapter.getVideoInfoByPosition(viewPager2.getCurrentItem());
+            videoPlayer.release();
+            videoPlayer.changeSourceAndPlay(videoInfo.getShort_video_info().getVideo_1().getUrl(), videoInfo.getShort_title(), false);
+            isFullVideo = false;
+        } else {
+            //进入详情页
+            Intent intent = new Intent(MainActivity.this, MoreInformationActivity.class);
+            intent.putExtra("video_info", adapter.getVideoInfoByPosition(viewPager2.getCurrentItem()));
+            startActivity(intent);
+        }
     }
 
     private void getstureLeft() {
         Log.i("Gesture", "left");
         Toast.makeText(MainActivity.this, "左滑", Toast.LENGTH_LONG).show();
-
+        if (!isFullVideo)  {
+            RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
+            GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
+            VideoInfo videoInfo = adapter.getVideoInfoByPosition(viewPager2.getCurrentItem());
+            videoPlayer.release();
+            videoPlayer.changeSourceAndPlay(videoInfo.getMovie_video_info().getVideo_1().getUrl(), videoInfo.getMovie_name(), true);
+            videoPlayer.getBackButton().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    gestureRight();
+                }
+            });
+            isFullVideo = true;
+        }
     }
 
     private Handler handler = new Handler();
@@ -353,12 +387,12 @@ public class MainActivity extends AppCompatActivity {
                             gestureDown();
                             break;
                         }
-                        case GestureHandler.GESTURE_FAVOR: {
-                            gestureFavor();
+                        case GestureHandler.GESTURE_OK: {
+                            gestureOK();
                             break;
                         }
-                        case GestureHandler.GESTURE_RIGHT: {
-                            gestureRight();
+                        case GestureHandler.GESTURE_PALM: {
+                            gesturePalm();
                             break;
                         }
                     }

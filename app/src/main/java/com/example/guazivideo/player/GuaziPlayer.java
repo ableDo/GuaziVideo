@@ -29,15 +29,18 @@ public class GuaziPlayer extends StandardGSYVideoPlayer {
         this.releaseVideos();
     }
 
-    public void changeSourceAndPlay(String url) {
+    public void changeSourceAndPlay(String url, String title, boolean isBackBtnVisible) {
 
-        this.setUp(url, true, "测试视频");
-        System.out.println("hahaah");
+        this.setUp(url, true, title);
 
         //增加title
         this.getTitleTextView().setVisibility(View.VISIBLE);
         //设置返回键
-        this.getBackButton().setVisibility(View.INVISIBLE);
+        if (isBackBtnVisible) {
+            this.getBackButton().setVisibility(View.VISIBLE);
+        } else {
+            this.getBackButton().setVisibility(View.INVISIBLE);
+        }
 
 
         this.setIsTouchWiget(true);

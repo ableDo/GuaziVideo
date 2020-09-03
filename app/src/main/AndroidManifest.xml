@@ -21,10 +21,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".SimplePlayer"
-            android:screenOrientation="landscape"
-            tools:ignore="LockedOrientationActivity"></activity>
     </application>
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
