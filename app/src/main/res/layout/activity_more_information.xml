@@ -1,111 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/more_info_scroll"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
-        android:orientation="vertical"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/more_container"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:background="@android:color/black"
+        tools:context="org.tensorflow.lite.examples.classification.CameraActivity"
+        tools:ignore="MissingConstraints" />
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/more_info_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/cover"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"/>
-<!--        android:src="@drawable/movie_cover" />-->
 
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:layout_below="@id/cover"
-        android:layout_marginTop="2dp"
-        android:background="@color/gainsboro"/>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
-    <LinearLayout
-        android:id="@+id/author"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="5dp"
-        android:layout_weight="1">
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/author_avatar"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true"/>
-<!--            android:src="@drawable/author_avatar" -->
+            <ImageView
+                android:id="@+id/cover"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"/>
+            <!--        android:src="@drawable/movie_cover" />-->
 
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_below="@id/cover"
+                android:layout_marginTop="2dp"
+                android:background="@color/gainsboro"/>
 
-        <TextView
-            android:id="@+id/short_author"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textSize="18dp" />
-<!--            android:text="天天有梗"-->
+            <LinearLayout
+                android:id="@+id/author"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/author_avatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"/>
+                <!--            android:src="@drawable/author_avatar" -->
 
 
-    </LinearLayout>
-
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:layout_below="@id/author"
-        android:layout_marginTop="2dp"
-        android:background="@color/gainsboro"/>
-
-
-    <LinearLayout
-        android:id="@+id/describe"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="5dp"
-        android:orientation="vertical"
-        android:layout_weight="1">
-
-        <TextView
-            android:id="@+id/short_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:textSize="18dp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            />
-<!--            android:text="【盘点电影里的豪车，奥迪A8只能排第五，第二教你怎么变敞篷车"-->
+                <TextView
+                    android:id="@+id/short_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
+                <!--            android:text="天天有梗"-->
 
 
-        <TextView
-            android:id="@+id/movie_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:textSize="15dp"/>
-<!--            android:text="半斤八两"-->
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_below="@id/author"
+                android:layout_marginTop="2dp"
+                android:background="@color/gainsboro"/>
 
 
-        <TextView
-            android:id="@+id/movie_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:textSize="15dp"/>
-<!--            android:text="8.2分 喜剧 许冠文/许冠杰"-->
+            <LinearLayout
+                android:id="@+id/describe"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/short_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="18dp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    />
+                <!--            android:text="【盘点电影里的豪车，奥迪A8只能排第五，第二教你怎么变敞篷车"-->
 
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/movie_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="15dp"/>
+                <!--            android:text="半斤八两"-->
 
 
-</LinearLayout>
+                <TextView
+                    android:id="@+id/movie_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="15dp"/>
+                <!--            android:text="8.2分 喜剧 许冠文/许冠杰"-->
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
     </ScrollView>
+
+</RelativeLayout>
+
+

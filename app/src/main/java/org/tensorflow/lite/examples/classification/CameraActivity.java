@@ -39,6 +39,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.example.guazivideo.activity.BaseActivity;
 import com.example.guazivideo.activity.MainActivity;
 import com.example.guazivideo.R;
 import com.example.guazivideo.gestureinterface.GestureHandler;
@@ -99,14 +100,16 @@ public abstract class CameraActivity
   private Device device = Device.NNAPI;
   private int numThreads = -1;
   private GestureHandler uihandler;
-  private MainActivity context;
+  private BaseActivity context;
+  private View container;
 
-  public CameraActivity(GestureHandler _handler, MainActivity obj){
+  public CameraActivity(GestureHandler _handler, BaseActivity obj, View view){
       uihandler = _handler;
       context = obj;
       handlerThread = new HandlerThread("inference");
       handlerThread.start();
       handler = new Handler(handlerThread.getLooper());
+      container = view;
   }
   public void endGestureDetect(){
       handlerThread.quitSafely();
@@ -547,7 +550,7 @@ public abstract class CameraActivity
           new LegacyCameraConnectionFragment(this, getLayoutId(), getDesiredPreviewFrameSize());
     }
 
-    context.getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+    context.getFragmentManager().beginTransaction().replace(container.getId(), fragment).commit();
   }
 
   protected void fillBytes(final Plane[] planes, final byte[][] yuvBytes) {
@@ -639,7 +642,7 @@ public abstract class CameraActivity
   protected GestureHandler gethandler(){
       return uihandler;
   }
-  protected MainActivity getActivity(){
+  protected BaseActivity getActivity(){
       return context;
   }
   /*

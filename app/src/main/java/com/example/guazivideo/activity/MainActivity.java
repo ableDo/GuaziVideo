@@ -39,7 +39,7 @@ import com.example.guazivideo.view.RotationLoadingView;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final int TIMER = 999;
     private static boolean flag = true;
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isFullVideo = false;
     private boolean isGestureOpen = true;
     private boolean isGesturesolving = false;
-
+    DetectGesture myDetectGesture = null;
 
     private View backGroundView;
     private RotationLoadingView loadingView;
@@ -75,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
         GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
         videoPlayer.clickOnce();
         setSystemUIVisible(false);
+        if (myDetectGesture != null) {
+            startGestureDetect();
+        }
     }
 
     @Override
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
         GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
         videoPlayer.clickOnce();
+        myDetectGesture.endGestureDetect();
     }
 
     @Override
@@ -385,7 +389,10 @@ public class MainActivity extends AppCompatActivity {
     }
     @SuppressLint("HandlerLeak")
     private void startGestureDetect() {
-        new DetectGesture().startGestureDetect(new GestureHandler() {
+        if (myDetectGesture == null) {
+            myDetectGesture = new DetectGesture();
+        }
+        myDetectGesture.startGestureDetect(new GestureHandler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 switch (msg.what) {
@@ -421,7 +428,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-        }, MainActivity.this);
+        }, MainActivity.this, findViewById(R.id.main_container));
     }
 
     private Handler handler = new Handler();

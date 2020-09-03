@@ -24,7 +24,9 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.util.Size;
 import android.util.TypedValue;
+import android.view.View;
 
+import com.example.guazivideo.activity.BaseActivity;
 import com.example.guazivideo.activity.MainActivity;
 import com.example.guazivideo.R;
 import com.example.guazivideo.gestureinterface.GestureHandler;
@@ -51,8 +53,8 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
   /** Input image size of the model along y axis. */
   private int imageSizeY;
 
-  public ClassifierActivity(GestureHandler _handler, MainActivity obj){
-    super(_handler, obj);
+  public ClassifierActivity(GestureHandler _handler, BaseActivity obj, View view){
+    super(_handler, obj,  view);
   }
   @Override
   protected int getLayoutId() {

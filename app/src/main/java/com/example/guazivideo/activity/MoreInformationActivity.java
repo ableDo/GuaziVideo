@@ -1,11 +1,14 @@
 package com.example.guazivideo.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -15,14 +18,18 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.guazivideo.R;
 import com.example.guazivideo.entity.VideoInfo;
+import com.example.guazivideo.gestureinterface.DetectGesture;
+import com.example.guazivideo.gestureinterface.GestureHandler;
 import com.example.guazivideo.player.GuaziPlayer;
 
 
-public class MoreInformationActivity extends AppCompatActivity {
+public class MoreInformationActivity extends BaseActivity {
+    DetectGesture myDetectGesture = null;
 
     private void setSystemUIVisible(boolean show) {
         if (show) {
@@ -57,7 +64,7 @@ public class MoreInformationActivity extends AppCompatActivity {
         setSystemUIVisible(false);
 
         initDetector();
-
+        startGestureDetect();
 
         Intent intent = getIntent();
         VideoInfo videoInfo = (VideoInfo) intent.getSerializableExtra("video_info");
@@ -76,6 +83,12 @@ public class MoreInformationActivity extends AppCompatActivity {
         textView_short_title.setText(videoInfo.getShort_title());
         textView_movie_name.setText(videoInfo.getMovie_name());
         textView_movie_desc.setText(videoInfo.getMovie_desc());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        myDetectGesture.endGestureDetect();
     }
 
     private void initDetector() {
@@ -105,6 +118,26 @@ public class MoreInformationActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("HandlerLeak")
+    private void startGestureDetect() {
+        if (myDetectGesture == null) {
+            myDetectGesture = new DetectGesture();
+        }
+        myDetectGesture.startGestureDetect(new GestureHandler() {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                switch (msg.what) {
+
+                    case GestureHandler.GESTURE_PALM: {
+                        Log.i("Gesture", "palm");
+                        Toast.makeText(MoreInformationActivity.this, "palm", Toast.LENGTH_LONG).show();
+
+                        break;
+                    }
+                }
+            }
+        }, MoreInformationActivity.this, findViewById(R.id.more_container));
+    }
 
 }
 
