@@ -462,6 +462,7 @@ public abstract class CameraActivity
   private String chooseCamera() {
     final CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
     try {
+        /*
       for (final String cameraId : manager.getCameraIdList()) {
         final CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
 
@@ -484,14 +485,36 @@ public abstract class CameraActivity
         // Fallback to camera1 API for internal cameras that don't have full support.
         // This should help with legacy situations where using the camera2 API causes
         // distorted or otherwise broken previews.
-        useCamera2API =
-            (facing == CameraCharacteristics.LENS_FACING_EXTERNAL)
+
+         */
+        String frontCameraId = null;
+        String backCameraId = null;
+        if (manager != null && manager.getCameraIdList().length > 0) {
+            for (String camId : manager.getCameraIdList()) {
+                CameraCharacteristics characteristics = manager.getCameraCharacteristics(camId);
+                StreamConfigurationMap map =
+                        characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+                Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
+                if (facing != null && map != null) {
+                    if (facing == CameraCharacteristics.LENS_FACING_FRONT) {
+                        frontCameraId = camId;
+                        break;
+                    } else if (facing == CameraCharacteristics.LENS_FACING_BACK) {
+                        backCameraId = camId;
+                    }
+                }
+            }
+            useCamera2API = true;
+          /*  (facing == CameraCharacteristics.LENS_FACING_EXTERNAL)
                 || isHardwareLevelSupported(
                     characteristics, CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
-        LOGGER.i("Camera API lv2?: %s", useCamera2API);
-        return cameraId;
+        LOGGER.i("Camera API lv2?: %s", useCamera2API); */
+            return frontCameraId != null ? frontCameraId : backCameraId;
+        }
+
+
       }
-    } catch (CameraAccessException e) {
+     catch (CameraAccessException e) {
       LOGGER.e(e, "Not allowed to access camera");
     }
 
