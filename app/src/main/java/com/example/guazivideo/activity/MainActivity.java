@@ -34,6 +34,7 @@ import com.example.guazivideo.gestureinterface.GestureHandler;
 import com.example.guazivideo.player.GuaziPlayer;
 import com.example.guazivideo.request.VideoService;
 import com.example.guazivideo.request.WebService;
+import com.example.guazivideo.view.RotationLoadingView;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -45,33 +46,23 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager2 viewPager2;
     private HorizontalVpAdapter adapter;
     private UnVisibleHandler unVisibleHandler;
-    private static final int START_TIME = 4000;
+    private static final int START_TIME = 2000;
     private boolean isFullVideo = false;
     private boolean isGestureOpen = true;
     private boolean isGesturesolving = false;
 
-    Toast mytoast;
-    private void showToast(String text) {
-        if (mytoast == null) {
-            mytoast = Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT);
-        }  else {
-            mytoast.setText(text);
-        }
-        mytoast.show();
-    }
+
+    private View backGroundView;
+    private RotationLoadingView loadingView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        OpeningStartAnimation openingStartAnimation = new OpeningStartAnimation.Builder(this)
-                .setDrawStategy(new LineDrawStrategy()) //设置动画效果
-                .setAnimationFinishTime(START_TIME)
-                .create();
-        openingStartAnimation.show(this);
-        //隐藏状态栏和导航栏
         setTimer();
+        initView();
         initData();
-
         initDetector();
         handler.postDelayed(task, 2000);//立即调用
 
@@ -83,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
         GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
         videoPlayer.clickOnce();
+        setSystemUIVisible(false);
     }
 
     @Override
@@ -92,6 +84,14 @@ public class MainActivity extends AppCompatActivity {
         GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
         videoPlayer.clickOnce();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unVisibleHandler.removeCallbacksAndMessages(null);
+        stopTimer();
+    }
+
 
     private void initData() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -107,6 +107,10 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<List<VideoInfo>> call, Response<List<VideoInfo>> response) {
                 List<VideoInfo> videoInfos = response.body();
                 initViewPager(videoInfos);
+                backGroundView.setVisibility(View.INVISIBLE);
+                loadingView.setVisibility(View.INVISIBLE);
+                setSystemUIVisible(false);
+                startGestureDetect();
             }
 
             @Override
@@ -116,6 +120,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void initView() {
+        OpeningStartAnimation openingStartAnimation = new OpeningStartAnimation.Builder(this)
+                .setDrawStategy(new LineDrawStrategy()) //设置动画效果
+                .setAnimationFinishTime(START_TIME)
+                .create();
+        openingStartAnimation.show(this);
+        backGroundView = findViewById(R.id.main_background);
+        loadingView  = findViewById(R.id.item_loading_image);
+        loadingView.startRotationAnimation();
+
+    }
     private void initViewPager(List<VideoInfo> videoInfos) {
         viewPager2 = findViewById(R.id.vp_h);
         adapter = new HorizontalVpAdapter(this, videoInfos);
@@ -131,8 +146,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 Log.i("Gesture", "favor");
-                showToast("喜欢");
-                //Toast.makeText(MainActivity.this, "喜欢", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "喜欢", Toast.LENGTH_LONG).show();
                 gestureFavor();
                 return super.onDoubleTap(e);
             }
@@ -159,29 +173,25 @@ public class MainActivity extends AppCompatActivity {
                 //右滑
                 if (velocityX > 0 && Math.abs(velocityX) > 2 * Math.abs(velocityY)) {
                     Log.i("Gesture", "right");
-                    showToast("右滑");
-                   // Toast.makeText(MainActivity.this, "右滑", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "右滑", Toast.LENGTH_LONG).show();
                     gestureRight();
                 }
                 //下滑
                 if (velocityY > 0 && Math.abs(velocityY) > 2 * Math.abs(velocityX)) {
                     Log.i("Gesture", "down");
-                    showToast("下滑");
-                    //Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
                     gestureDown();
                 }
                 //左滑
                 if (velocityX < 0 && Math.abs(velocityX) > 2 * Math.abs(velocityY)) {
                     Log.i("Gesture", "left");
-                    showToast("左滑");
-                  //  Toast.makeText(MainActivity.this, "左滑", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "左滑", Toast.LENGTH_LONG).show();
                     getstureLeft();
                 }
                 //上滑
                 if (velocityY < 0 && Math.abs(velocityY) > 2 * Math.abs(velocityX)) {
                     Log.i("Gesture", "up");
-                    showToast("上滑");
-                    //Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
                     gestureUp();
                 }
                 return true;
@@ -239,7 +249,6 @@ public class MainActivity extends AppCompatActivity {
             switch (msg.what) {
                 case TIMER:
                     mActivity.get().setSystemUIVisible(false);
-                    mActivity.get().startGestureDetect();
                     break;
                 default:
                     break;
@@ -253,12 +262,6 @@ public class MainActivity extends AppCompatActivity {
         flag = false;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unVisibleHandler.removeCallbacksAndMessages(null);
-    }
-
     private void gestureFavor() {
 
     }
@@ -270,7 +273,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void gestureUp() {
-        if (adapter.getItemCount() > viewPager2.getCurrentItem() + 1 && !isFullVideo) {
+        if (adapter.getItemCount() > viewPager2.getCurrentItem() + 1 && !isFullVideo && !isGesturesolving) {
+            isGesturesolving = true;
             RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
             GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
 
@@ -284,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
                     adapter.setTempPosition(viewPager2.getCurrentItem() + 1);
                     viewPager2.setCurrentItem(viewPager2.getCurrentItem() + 1, false);
                     adapter.notifyDataSetChanged();
+                    isGesturesolving = false;
                 }
                 @Override
                 public void onAnimationRepeat(Animation animation) {
@@ -298,7 +303,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void gestureDown() {
 
-        if (viewPager2.getCurrentItem() > 0 && !isFullVideo) {
+        if (viewPager2.getCurrentItem() > 0 && !isFullVideo && !isGesturesolving) {
+            isGesturesolving = true;
             RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
             GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
 
@@ -312,6 +318,7 @@ public class MainActivity extends AppCompatActivity {
                     adapter.setTempPosition(viewPager2.getCurrentItem() - 1);
                     viewPager2.setCurrentItem(viewPager2.getCurrentItem() - 1, false);
                     adapter.notifyDataSetChanged();
+                    isGesturesolving = false;
                 }
                 @Override
                 public void onAnimationRepeat(Animation animation) {
@@ -326,7 +333,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void gestureRight() {
-
+        if (isGesturesolving) {
+            return;
+        }
+        isGesturesolving = true;
         if (isFullVideo) {
             RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
             GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
@@ -345,10 +355,14 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             overridePendingTransition(R.anim.translate_in,R.anim.translate_out);
         }
+        isGesturesolving  = false;
     }
 
     private void getstureLeft() {
-
+        if (isGesturesolving) {
+            return;
+        }
+        isGesturesolving = true;
         if (!isFullVideo)  {
             RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
             GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
@@ -367,19 +381,18 @@ public class MainActivity extends AppCompatActivity {
             });
             isFullVideo = true;
         }
+        isGesturesolving = false;
     }
     @SuppressLint("HandlerLeak")
     private void startGestureDetect() {
         new DetectGesture().startGestureDetect(new GestureHandler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
-                showToast(msg.obj.toString());
                 switch (msg.what) {
                     case GestureHandler.GESTURE_DOWN: {
                         if (isGestureOpen) {
                             Log.i("Gesture", "down");
-
-                            //Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
                             gestureDown();
                         }
                         break;
@@ -387,23 +400,21 @@ public class MainActivity extends AppCompatActivity {
                     case GestureHandler.GESTURE_UP: {
                         if (isGestureOpen) {
                             Log.i("Gesture", "up");
-                            //showToast("上滑");
-                            //Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
                             gestureUp();
                         }
                         break;
                     }
                     case GestureHandler.GESTURE_OK: {
                         Log.i("Gesture", "ok");
-                        //showToast("ok");
-                        //Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
                         gestureOK();
                         break;
                     }
                     case GestureHandler.GESTURE_PALM: {
                         if (isGestureOpen) {
                             Log.i("Gesture", "palm");
-                            //Toast.makeText(MainActivity.this, "palm", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "palm", Toast.LENGTH_LONG).show();
                             gesturePalm();
                         }
                         break;

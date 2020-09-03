@@ -54,7 +54,7 @@ public class MoreInformationActivity extends AppCompatActivity {
 
         setSystemUIVisible(false);
 
-//        initDetector();
+        initDetector();
 
 
         Intent intent = getIntent();
@@ -88,7 +88,7 @@ public class MoreInformationActivity extends AppCompatActivity {
                 return true;
             }
         });
-        View view = (View) findViewById(R.id.v_gesture);
+        View view = findViewById(R.id.more_info_Lin);
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -98,6 +98,7 @@ public class MoreInformationActivity extends AppCompatActivity {
 
         });
     }
+
 
 }
 
