@@ -1,23 +1,16 @@
-package com.example.guazivideo;
+package com.example.guazivideo.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import com.example.guazivideo.R;
 import com.example.guazivideo.entity.MovieVideoInfo;
-import com.example.guazivideo.entity.Video;
 import com.example.guazivideo.entity.VideoInfo;
 import com.example.guazivideo.player.GuaziPlayer;
-import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
-import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;

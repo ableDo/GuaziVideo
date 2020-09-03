@@ -10,7 +10,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import site.gemus.openingstartanimation.LineDrawStrategy;
-import site.gemus.openingstartanimation.NormalDrawStrategy;
 import site.gemus.openingstartanimation.OpeningStartAnimation;
 
 import android.annotation.SuppressLint;
@@ -22,9 +21,11 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
-import com.example.guazivideo.HorizontalVpAdapter;
+import com.example.guazivideo.adapter.HorizontalVpAdapter;
 import com.example.guazivideo.R;
 import com.example.guazivideo.entity.Gesture;
 import com.example.guazivideo.entity.VideoInfo;
@@ -47,47 +48,13 @@ public class MainActivity extends AppCompatActivity {
     private static final int START_TIME = 4000;
     private boolean isFullVideo = false;
     private boolean isGestureOpen = true;
+    private boolean isGesturesolving = false;
 
-
-    @SuppressLint("HandlerLeak")
-    private void startGestureDetect() {
-        new DetectGesture().startGestureDetect(new GestureHandler() {
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                switch (msg.what) {
-                    case GestureHandler.GESTURE_DOWN: {
-                        if (isGestureOpen) {
-                            gestureDown();
-                        }
-                        break;
-                    }
-                    case GestureHandler.GESTURE_UP: {
-                        if (isGestureOpen) {
-                            gestureUp();
-                        }
-                        break;
-                    }
-                    case GestureHandler.GESTURE_OK: {
-                        gestureOK();
-                        break;
-                    }
-                    case GestureHandler.GESTURE_PALM: {
-                        if (isGestureOpen) {
-                            gesturePalm();
-                        }
-                        break;
-                    }
-                }
-            }
-        }, MainActivity.this);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        startGestureDetect();
         OpeningStartAnimation openingStartAnimation = new OpeningStartAnimation.Builder(this)
                 .setDrawStategy(new LineDrawStrategy()) //设置动画效果
                 .setAnimationFinishTime(START_TIME)
@@ -155,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onDoubleTap(MotionEvent e) {
+                Log.i("Gesture", "favor");
+                Toast.makeText(MainActivity.this, "喜欢", Toast.LENGTH_LONG).show();
                 gestureFavor();
                 return super.onDoubleTap(e);
             }
@@ -180,19 +149,26 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("MyGesture", "onFling" + velocityX + " " + velocityY);
                 //右滑
                 if (velocityX > 0 && Math.abs(velocityX) > 2 * Math.abs(velocityY)) {
+                    Log.i("Gesture", "right");
+                    Toast.makeText(MainActivity.this, "右滑", Toast.LENGTH_LONG).show();
                     gestureRight();
                 }
                 //下滑
                 if (velocityY > 0 && Math.abs(velocityY) > 2 * Math.abs(velocityX)) {
+                    Log.i("Gesture", "down");
+                    Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
                     gestureDown();
                 }
                 //左滑
                 if (velocityX < 0 && Math.abs(velocityX) > 2 * Math.abs(velocityY)) {
                     Log.i("Gesture", "left");
+                    Toast.makeText(MainActivity.this, "左滑", Toast.LENGTH_LONG).show();
                     getstureLeft();
                 }
                 //上滑
                 if (velocityY < 0 && Math.abs(velocityY) > 2 * Math.abs(velocityX)) {
+                    Log.i("Gesture", "up");
+                    Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
                     gestureUp();
                 }
                 return true;
@@ -250,11 +226,7 @@ public class MainActivity extends AppCompatActivity {
             switch (msg.what) {
                 case TIMER:
                     mActivity.get().setSystemUIVisible(false);
-
-                    if (flag) {
-                        Message message = this.obtainMessage(TIMER);
-                        this.sendMessageDelayed(message, 1000);
-                    }
+                    mActivity.get().startGestureDetect();
                     break;
                 default:
                     break;
@@ -275,43 +247,65 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void gestureFavor() {
-        Log.i("Gesture", "favor");
-        Toast.makeText(MainActivity.this, "喜欢", Toast.LENGTH_LONG).show();
 
     }
     private void gestureOK() {
-        Log.i("Gesture", "ok");
-        Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
-
+        getstureLeft();
     }
     private void gesturePalm() {
-        Log.i("Gesture", "palm");
-        Toast.makeText(MainActivity.this, "palm", Toast.LENGTH_LONG).show();
-
+        gestureRight();
     }
 
     private void gestureUp() {
-        Log.i("Gesture", "up");
-        Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
-
         if (adapter.getItemCount() > viewPager2.getCurrentItem() + 1 && !isFullVideo) {
-            adapter.setTempPosition(viewPager2.getCurrentItem() + 1);
-            viewPager2.setCurrentItem(viewPager2.getCurrentItem() + 1, true);
-            adapter.notifyDataSetChanged();
+            RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
+            GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
+
+            Animation animation = AnimationUtils.loadAnimation(MainActivity.this,R.anim.animation_up);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    adapter.setTempPosition(viewPager2.getCurrentItem() + 1);
+                    viewPager2.setCurrentItem(viewPager2.getCurrentItem() + 1, false);
+                    adapter.notifyDataSetChanged();
+                }
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+            });
+            videoPlayer.startAnimation(animation);
+
+
         }
 
     }
 
     private void gestureDown() {
 
-        Log.i("Gesture", "down");
-        Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
-
         if (viewPager2.getCurrentItem() > 0 && !isFullVideo) {
-            adapter.setTempPosition(viewPager2.getCurrentItem() - 1);
-            viewPager2.setCurrentItem(viewPager2.getCurrentItem() - 1, true);
-            adapter.notifyDataSetChanged();
+            RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
+            GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
 
+            Animation animation = AnimationUtils.loadAnimation(MainActivity.this,R.anim.animation_down);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    adapter.setTempPosition(viewPager2.getCurrentItem() - 1);
+                    viewPager2.setCurrentItem(viewPager2.getCurrentItem() - 1, false);
+                    adapter.notifyDataSetChanged();
+                }
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+
+            });
+            videoPlayer.startAnimation(animation);
         }
 
     }
@@ -319,11 +313,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void gestureRight() {
-        Log.i("Gesture", "right");
-        Toast.makeText(MainActivity.this, "右滑", Toast.LENGTH_LONG).show();
+
         if (isFullVideo) {
             RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
             GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
+
+            Animation animation = AnimationUtils.loadAnimation(MainActivity.this,R.anim.animation_right);
+            videoPlayer.startAnimation(animation);
+
             VideoInfo videoInfo = adapter.getVideoInfoByPosition(viewPager2.getCurrentItem());
             videoPlayer.release();
             videoPlayer.changeSourceAndPlay(videoInfo.getShort_video_info().getVideo_1().getUrl(), videoInfo.getShort_title(), false);
@@ -337,11 +334,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getstureLeft() {
-        Log.i("Gesture", "left");
-        Toast.makeText(MainActivity.this, "左滑", Toast.LENGTH_LONG).show();
+
         if (!isFullVideo)  {
             RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
             GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
+
+            Animation animation = AnimationUtils.loadAnimation(MainActivity.this,R.anim.animation_left);
+            videoPlayer.startAnimation(animation);
+
             VideoInfo videoInfo = adapter.getVideoInfoByPosition(viewPager2.getCurrentItem());
             videoPlayer.release();
             videoPlayer.changeSourceAndPlay(videoInfo.getMovie_video_info().getVideo_1().getUrl(), videoInfo.getMovie_name(), true);
@@ -354,13 +354,52 @@ public class MainActivity extends AppCompatActivity {
             isFullVideo = true;
         }
     }
+    @SuppressLint("HandlerLeak")
+    private void startGestureDetect() {
+        new DetectGesture().startGestureDetect(new GestureHandler() {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                switch (msg.what) {
+                    case GestureHandler.GESTURE_DOWN: {
+                        if (isGestureOpen) {
+                            Log.i("Gesture", "down");
+                            Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
+                            gestureDown();
+                        }
+                        break;
+                    }
+                    case GestureHandler.GESTURE_UP: {
+                        if (isGestureOpen) {
+                            Log.i("Gesture", "up");
+                            Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
+                            gestureUp();
+                        }
+                        break;
+                    }
+                    case GestureHandler.GESTURE_OK: {
+                        Log.i("Gesture", "ok");
+                        Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
+                        gestureOK();
+                        break;
+                    }
+                    case GestureHandler.GESTURE_PALM: {
+                        if (isGestureOpen) {
+                            Log.i("Gesture", "palm");
+                            Toast.makeText(MainActivity.this, "palm", Toast.LENGTH_LONG).show();
+                            gesturePalm();
+                        }
+                        break;
+                    }
+                }
+            }
+        }, MainActivity.this);
+    }
 
     private Handler handler = new Handler();
 
     private Runnable task = new Runnable() {
         public void run() {
             // TODOAuto-generated method stub
-            Log.i("gesture" ,  " ");
 
             handler.postDelayed(this,  1000);//设置延迟时间，此处是5秒
             //需要执行的代码
@@ -380,18 +419,26 @@ public class MainActivity extends AppCompatActivity {
                     Log.i("gesture" , gesture.gesture + " ");
                     switch (gesture.gesture) {
                         case GestureHandler.GESTURE_UP: {
+                            Log.i("Gesture", "up");
+                            Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
                             gestureUp();
                             break;
                         }
                         case GestureHandler.GESTURE_DOWN: {
+                            Log.i("Gesture", "down");
+                            Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
                             gestureDown();
                             break;
                         }
                         case GestureHandler.GESTURE_OK: {
+                            Log.i("Gesture", "ok");
+                            Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
                             gestureOK();
                             break;
                         }
                         case GestureHandler.GESTURE_PALM: {
+                            Log.i("Gesture", "palm");
+                            Toast.makeText(MainActivity.this, "palm", Toast.LENGTH_LONG).show();
                             gesturePalm();
                             break;
                         }
