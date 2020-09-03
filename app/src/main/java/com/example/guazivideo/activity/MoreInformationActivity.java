@@ -2,8 +2,6 @@ package com.example.guazivideo.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -16,7 +14,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,8 +21,7 @@ import com.bumptech.glide.Glide;
 import com.example.guazivideo.R;
 import com.example.guazivideo.entity.VideoInfo;
 import com.example.guazivideo.gestureinterface.DetectGesture;
-import com.example.guazivideo.gestureinterface.GestureHandler;
-import com.example.guazivideo.player.GuaziPlayer;
+import org.tensorflow.lite.examples.classification.GestureInterface.GestureHandler;
 
 
 public class MoreInformationActivity extends BaseActivity {
@@ -136,7 +132,7 @@ public class MoreInformationActivity extends BaseActivity {
                     }
                 }
             }
-        }, MoreInformationActivity.this, findViewById(R.id.more_container));
+        }, MoreInformationActivity.this, R.id.more_container, R.layout.tfe_ic_camera_connection_fragment);
     }
 
 }

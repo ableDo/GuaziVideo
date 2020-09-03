@@ -18,9 +18,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    aaptOptions {
-        noCompress "tflite"
-    }
     buildTypes {
         release {
             minifyEnabled false
@@ -31,6 +28,7 @@ android {
 }
 
 dependencies {
+    implementation project(path: ':CameraClassification')
     compile 'com.github.bumptech.glide:glide:3.8.0'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -40,9 +38,9 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    testImplementation 'junit:junit:4.13'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     implementation 'com.shuyu:GSYVideoPlayer:7.1.5'
     implementation 'com.shuyu:GSYVideoPlayer-exo2:7.1.5'
@@ -55,22 +53,22 @@ dependencies {
     implementation 'com.shuyu:gsyVideoPlayer-x86:7.1.5'
 
 
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.0.0'
-    implementation 'com.google.android.material:material:1.0.0'
+    //implementation 'androidx.appcompat:appcompat:1.0.0'
+    //implementation 'androidx.coordinatorlayout:coordinatorlayout:1.0.0'
+    //implementation 'com.google.android.material:material:1.0.0'
 
     // Build off of nightly TensorFlow Lite
-    implementation('org.tensorflow:tensorflow-lite:0.0.0-nightly') { changing = true }
-    implementation('org.tensorflow:tensorflow-lite-gpu:0.0.0-nightly') { changing = true }
-    implementation('org.tensorflow:tensorflow-lite-support:0.0.0-nightly') { changing = true }
+    //implementation('org.tensorflow:tensorflow-lite:0.0.0-nightly') { changing = true }
+    //implementation('org.tensorflow:tensorflow-lite-gpu:0.0.0-nightly') { changing = true }
+    //implementation('org.tensorflow:tensorflow-lite-support:0.0.0-nightly') { changing = true }
     // Use local TensorFlow library
     // implementation 'org.tensorflow:tensorflow-lite-local:0.0.0'
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.google.truth:truth:1.0.1'
 
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.google.code.gson:gson:2.8.1'
+    implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 }

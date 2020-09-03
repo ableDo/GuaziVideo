@@ -1,2 +1,3 @@
+include ':CameraClassification'
 rootProject.name='GuaziVideo'
 include ':app'

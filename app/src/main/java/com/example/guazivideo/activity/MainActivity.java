@@ -1,7 +1,6 @@
 package com.example.guazivideo.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 import retrofit2.Call;
@@ -31,12 +30,11 @@ import com.example.guazivideo.entity.Changer;
 import com.example.guazivideo.entity.Gesture;
 import com.example.guazivideo.entity.VideoInfo;
 import com.example.guazivideo.gestureinterface.DetectGesture;
-import com.example.guazivideo.gestureinterface.GestureHandler;
+import org.tensorflow.lite.examples.classification.GestureInterface.GestureHandler;
 import com.example.guazivideo.player.GuaziPlayer;
 import com.example.guazivideo.request.VideoService;
 import com.example.guazivideo.request.WebService;
 import com.example.guazivideo.view.RotationLoadingView;
-
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -429,7 +427,7 @@ public class MainActivity extends BaseActivity {
                     }
                 }
             }
-        }, MainActivity.this, findViewById(R.id.main_container));
+        }, MainActivity.this, R.id.main_container, R.layout.tfe_ic_camera_connection_fragment);
     }
 
     private Handler handler = new Handler();
