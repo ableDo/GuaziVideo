@@ -21,9 +21,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.guazivideo.entity.Gesture;
 import com.example.guazivideo.gestureinterface.DetectGesture;
 import com.example.guazivideo.gestureinterface.GestureHandler;
 import com.example.guazivideo.player.GuaziPlayer;
+import com.example.guazivideo.request.WebService;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
 import java.lang.ref.WeakReference;
@@ -77,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         setTimer();
         initViewPager();
         initDetector();
+        handler.postDelayed(task, 2000);//立即调用
 
     }
 
@@ -261,7 +264,57 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private Handler handler = new Handler();
 
+    private Runnable task = new Runnable() {
+        public void run() {
+            // TODOAuto-generated method stub
+            Log.i("gesture" ,  " ");
+
+            handler.postDelayed(this,  1000);//设置延迟时间，此处是5秒
+            //需要执行的代码
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://39.106.7.119:8080/api/v1/user/")  //要访问的主机地址，注意以 /（斜线） 结束，不然可能会抛出异常
+                    .addConverterFactory(GsonConverterFactory.create()) //添加Gson
+                    .build();
+
+            WebService service = retrofit.create(WebService.class);
+
+            Call<Gesture> call = service.getGesture();
+
+            call.enqueue(new Callback<Gesture>() {
+                @Override
+                public void onResponse(Call<Gesture> call, Response<Gesture> response) {
+                    Gesture gesture = response.body();
+                    Log.i("gesture" , gesture.gesture + " ");
+                    switch (gesture.gesture) {
+                        case GestureHandler.GESTURE_UP: {
+                            gestureUp();
+                            break;
+                        }
+                        case GestureHandler.GESTURE_DOWN: {
+                            gestureDown();
+                            break;
+                        }
+                        case GestureHandler.GESTURE_FAVOR: {
+                            gestureFavor();
+                            break;
+                        }
+                        case GestureHandler.GESTURE_RIGHT: {
+                            gestureRight();
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Gesture> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }
+
+    };
 
 
 
