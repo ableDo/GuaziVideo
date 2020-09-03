@@ -108,6 +108,16 @@ public abstract class CameraActivity
       handlerThread.start();
       handler = new Handler(handlerThread.getLooper());
   }
+  public void endGestureDetect(){
+      handlerThread.quitSafely();
+      try {
+          handlerThread.join();
+          handlerThread = null;
+          handler = null;
+      } catch (final InterruptedException e) {
+          LOGGER.e(e, "Exception!");
+      }
+  }
   public void startGestureDetect(){
     if (hasPermission()) {
       setFragment();
