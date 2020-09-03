@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.guazivideo.entity.Video;
+import com.example.guazivideo.entity.VideoInfo;
 import com.example.guazivideo.player.GuaziPlayer;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
@@ -23,27 +25,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class HorizontalVpAdapter extends RecyclerView.Adapter<HorizontalVpAdapter.HorizontalVpViewHolder> {
 
-    private List<String> sources;
+    private List<VideoInfo> sources;
     private Context mContext;
     private GuaziPlayer tempPlayer = null;
     private int tempPosition = 0;
+    private final String TAG = "adapter";
 
-
-    HorizontalVpAdapter(Context context) {
+    public HorizontalVpAdapter(Context context, List<VideoInfo> sources) {
         mContext = context;
-        if (sources == null) {
-            sources = new ArrayList<>();
-            sources.add("http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4");
-            sources.add("http://vfx.mtime.cn/Video/2019/02/04/mp4/190204084208765161.mp4");
-            sources.add("http://vfx.mtime.cn/Video/2019/03/21/mp4/190321153853126488.mp4");
-            sources.add("http://vfx.mtime.cn/Video/2019/03/19/mp4/190319222227698228.mp4");
-            sources.add("http://vfx.mtime.cn/Video/2019/03/19/mp4/190319212559089721.mp4");
-        }
+        this.sources = sources;
     }
 
     @Override
     public HorizontalVpViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.i("adapter", "create view holoder");
+        Log.i(TAG, "create view holoder");
         return new HorizontalVpViewHolder(LayoutInflater.from(mContext).inflate((R.layout.activity_simple_play), parent, false));
     }
 
@@ -57,12 +52,13 @@ public class HorizontalVpAdapter extends RecyclerView.Adapter<HorizontalVpAdapte
             tempPlayer.release();
         }
 
-        holder.videoPlayer.changeSourceAndPlay(getSource(position));
+        holder.videoPlayer.changeSourceAndPlay(getVideoUrl(position));
+        Log.i(TAG, getVideoUrl(position));
         tempPlayer = holder.videoPlayer;
 
     }
-    public String getSource(int position) {
-        return sources.get(position);
+    public String getVideoUrl(int position) {
+        return sources.get(position).getShort_video_info().getVideo_1().getUrl();
     }
     public void setTempPosition(int position) {
         tempPosition = position;

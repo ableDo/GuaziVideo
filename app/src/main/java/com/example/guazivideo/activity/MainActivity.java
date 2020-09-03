@@ -1,4 +1,4 @@
-package com.example.guazivideo;
+package com.example.guazivideo.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import site.gemus.openingstartanimation.NormalDrawStrategy;
 import site.gemus.openingstartanimation.OpeningStartAnimation;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,14 +22,18 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.guazivideo.HorizontalVpAdapter;
+import com.example.guazivideo.R;
 import com.example.guazivideo.entity.Gesture;
+import com.example.guazivideo.entity.VideoInfo;
 import com.example.guazivideo.gestureinterface.DetectGesture;
 import com.example.guazivideo.gestureinterface.GestureHandler;
 import com.example.guazivideo.player.GuaziPlayer;
+import com.example.guazivideo.request.VideoService;
 import com.example.guazivideo.request.WebService;
-import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager2 viewPager2;
     private HorizontalVpAdapter adapter;
     private UnVisibleHandler unVisibleHandler;
+    private static final int START_TIME = 4000;
+
 
     private void startGestureDetect() {
         new DetectGesture().startGestureDetect(new GestureHandler() {
@@ -72,40 +79,64 @@ public class MainActivity extends AppCompatActivity {
         startGestureDetect();
         OpeningStartAnimation openingStartAnimation = new OpeningStartAnimation.Builder(this)
                 .setDrawStategy(new NormalDrawStrategy()) //设置动画效果
-                .setAnimationFinishTime(1000)
+                .setAnimationFinishTime(START_TIME)
                 .create();
         openingStartAnimation.show(this);
         //隐藏状态栏和导航栏
         setTimer();
-        initViewPager();
+        initData();
+
         initDetector();
         handler.postDelayed(task, 2000);//立即调用
 
     }
 
-    private void initViewPager() {
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
+        GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
+        videoPlayer.clickOnce();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
+        GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
+        videoPlayer.clickOnce();
+    }
+
+    private void initData() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://2ed85251-2a97-4233-ac7d-fc93226486fb.mock.pstmn.io/")  //要访问的主机地址，注意以 /（斜线） 结束，不然可能会抛出异常
+                .addConverterFactory(GsonConverterFactory.create()) //添加Gson
+                .build();
+
+        VideoService service = retrofit.create(VideoService.class);
+
+        Call<List<VideoInfo>> call = service.getVideo();
+        call.enqueue(new Callback<List<VideoInfo>>() {
+            @Override
+            public void onResponse(Call<List<VideoInfo>> call, Response<List<VideoInfo>> response) {
+                List<VideoInfo> videoInfos = response.body();
+                initViewPager(videoInfos);
+            }
+
+            @Override
+            public void onFailure(Call<List<VideoInfo>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void initViewPager(List<VideoInfo> videoInfos) {
         viewPager2 = findViewById(R.id.vp_h);
-        adapter = new HorizontalVpAdapter(this);
+        adapter = new HorizontalVpAdapter(this, videoInfos);
         viewPager2.setUserInputEnabled(false);
         viewPager2.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
         viewPager2.setAdapter(adapter);
-        viewPager2.setPageTransformer(new ViewPager2.PageTransformer() {
-            @Override
-            public void transformPage(@NonNull View page, float position) {
 
-            }
-        });
-        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
-                System.out.println("hha " + recyclerView.getChildCount() + " " + position);
-                GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
-                videoPlayer.changeSourceAndPlay(adapter.getSource(position));
-
-            }
-        });
     }
 
     private void initDetector() {
@@ -147,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 //左滑
                 if (velocityX < 0 && Math.abs(velocityX) > 2 * Math.abs(velocityY)) {
                     Log.i("Gesture", "left");
-
+                    getstureLeft();
                 }
                 //上滑
                 if (velocityY < 0 && Math.abs(velocityY) > 2 * Math.abs(velocityX)) {
@@ -188,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
     private void setTimer() {
         unVisibleHandler = new UnVisibleHandler(MainActivity.this);
         Message message = unVisibleHandler.obtainMessage(TIMER);     // Message
-        unVisibleHandler.sendMessageDelayed(message, 1000);
+        unVisibleHandler.sendMessageDelayed(message, START_TIME);
     }
 
     private static class UnVisibleHandler extends Handler {
@@ -234,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void gestureFavor() {
         Log.i("Gesture", "favor");
-        Toast.makeText(MainActivity.this, "喜欢", Toast.LENGTH_LONG);
+        Toast.makeText(MainActivity.this, "喜欢", Toast.LENGTH_LONG).show();
 
     }
 
@@ -245,6 +276,8 @@ public class MainActivity extends AppCompatActivity {
             viewPager2.setCurrentItem(viewPager2.getCurrentItem() + 1, true);
             adapter.notifyDataSetChanged();
         }
+        Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
+
     }
 
     private void gestureDown() {
@@ -255,12 +288,20 @@ public class MainActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
 
         }
+        Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
+
     }
 
     private void gestureRight() {
         Log.i("Gesture", "right");
-        Toast.makeText(MainActivity.this, "右滑", Toast.LENGTH_LONG);
+        Toast.makeText(MainActivity.this, "右滑", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(MainActivity.this, MoreInformationActivity.class);
+        startActivity(intent);
+    }
 
+    private void getstureLeft() {
+        Log.i("Gesture", "right");
+        Toast.makeText(MainActivity.this, "左滑", Toast.LENGTH_LONG).show();
 
     }
 

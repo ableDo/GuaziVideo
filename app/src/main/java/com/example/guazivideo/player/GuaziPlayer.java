@@ -20,6 +20,7 @@ public class GuaziPlayer extends StandardGSYVideoPlayer {
         super.touchDoubleUp();
     }
 
+
     public void doubleClick() {
 
     }

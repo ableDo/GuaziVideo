@@ -24,10 +24,8 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.util.Size;
 import android.util.TypedValue;
-import android.view.View;
-import android.widget.Toast;
 
-import com.example.guazivideo.MainActivity;
+import com.example.guazivideo.activity.MainActivity;
 import com.example.guazivideo.R;
 import com.example.guazivideo.gestureinterface.GestureHandler;
 

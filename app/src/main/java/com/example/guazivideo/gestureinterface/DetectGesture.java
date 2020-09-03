@@ -1,8 +1,7 @@
 package com.example.guazivideo.gestureinterface;
 
-import com.example.guazivideo.MainActivity;
+import com.example.guazivideo.activity.MainActivity;
 
-import org.tensorflow.lite.examples.classification.CameraActivity;
 import org.tensorflow.lite.examples.classification.ClassifierActivity;
 
 public class DetectGesture implements DetectGestureInterface {
