@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -83,12 +85,16 @@ public class MoreInformationActivity extends AppCompatActivity {
                 //左滑
                 if (velocityX < 0 && Math.abs(velocityX) > 2 * Math.abs(velocityY)) {
                     Log.i("Gesture", "left");
+                    Animation animation = AnimationUtils.loadAnimation(MoreInformationActivity.this,R.anim.animation_left);
+                    View view = findViewById(R.id.more_info_scroll);
+                    view.startAnimation(animation);
                     finish();
+
                 }
                 return true;
             }
         });
-        View view = findViewById(R.id.more_info_Lin);
+        View view = findViewById(R.id.more_info_scroll);
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
