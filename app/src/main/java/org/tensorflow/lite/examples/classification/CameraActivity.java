@@ -71,7 +71,7 @@ public abstract class CameraActivity
   private int yRowStride;
   private Runnable postInferenceCallback;
   private Runnable imageConverter;
-
+    private Object mutex = new Object();
  /*
   private LinearLayout bottomSheetLayout;
   private LinearLayout gestureLayout;
@@ -290,11 +290,14 @@ public abstract class CameraActivity
       if (image == null) {
         return;
       }
-      if (isProcessingFrame) {
-        image.close();
-        return;
+
+      synchronized (mutex) {
+          if (isProcessingFrame) {
+              image.close();
+              return;
+          }
+          isProcessingFrame = true;
       }
-      isProcessingFrame = true;
       Trace.beginSection("imageAvailable");
       final Plane[] planes = image.getPlanes();
       fillBytes(planes, yuvBytes);
@@ -324,7 +327,9 @@ public abstract class CameraActivity
             @Override
             public void run() {
                 image.close();
-                isProcessingFrame = false;
+                synchronized (mutex) {
+                    isProcessingFrame = false;
+                }
             }
           };
 
@@ -457,7 +462,7 @@ public abstract class CameraActivity
         //if (facing != null && facing != CameraCharacteristics.LENS_FACING_FRONT) {
         //  continue;
         //}
-        if (facing == CameraCharacteristics.LENS_FACING_FRONT || facing == null) continue;
+        if (facing != CameraCharacteristics.LENS_FACING_FRONT || facing == null) continue;
 
         final StreamConfigurationMap map =
             characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);

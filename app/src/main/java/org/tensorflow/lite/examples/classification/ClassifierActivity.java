@@ -104,15 +104,38 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
               lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
 
 
+              if (results.get(0).getConfidence() > 0.8) {
+                  Message message = Message.obtain();
 
-              Message message = Message.obtain();
-              message.what = GestureHandler.GESTURE_UP;
-              //gethandler().sendMessage(message);
-              try {
-                Thread.sleep(2000);
-              } catch (InterruptedException e) {
-                e.printStackTrace();
+                  if (results.get(0).getTitle().equals(new String("Up"))) {
+                    message.what = GestureHandler.GESTURE_UP;
+                    message.obj = (Object) results.get(0).getTitle();
+                    gethandler().sendMessage(message);
+
+                    try {
+                      Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                      e.printStackTrace();
+                    }
+                  } else
+                    if (results.get(0).getTitle().equals(new String("Down"))){
+                      message.what = GestureHandler.GESTURE_DOWN;
+                      message.obj = (Object) results.get(0).getTitle();
+                      gethandler().sendMessage(message);
+                      try {
+                        Thread.sleep(2000);
+                      } catch (InterruptedException e) {
+                        e.printStackTrace();
+                      }
+                    }
+                    else{
+                      message.what = -1;
+                      message.obj = (Object) results.get(0).getTitle();
+                      gethandler().sendMessage(message);
+                    }
               }
+
+
 
               getActivity().runOnUiThread(
                   new Runnable() {

@@ -46,10 +46,18 @@ public class MainActivity extends AppCompatActivity {
     private static final int START_TIME = 4000;
 
 
+    private Toast mytoast;
     private void startGestureDetect() {
         new DetectGesture().startGestureDetect(new GestureHandler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
+
+                if (mytoast == null) {
+                    mytoast = Toast.makeText(MainActivity.this, msg.obj.toString() + " " + msg.what, Toast.LENGTH_SHORT);
+                }  else {
+                    mytoast.setText(msg.obj.toString() + " " + msg.what);
+                }
+                mytoast.show();
                 switch (msg.what) {
                     case GestureHandler.GESTURE_DOWN: {
                         gestureDown();
