@@ -29,9 +29,9 @@ public class GuaziPlayer extends StandardGSYVideoPlayer {
         this.releaseVideos();
     }
 
-    public void changeSourceAndPlay(String url, String title, boolean isBackBtnVisible) {
+    public void changeSourceAndPlay(String url, String title, boolean isBackBtnVisible, boolean cache) {
 
-        this.setUp(url, true, title);
+        this.setUp(url, cache, title);
 
         //增加title
         this.getTitleTextView().setVisibility(View.VISIBLE);

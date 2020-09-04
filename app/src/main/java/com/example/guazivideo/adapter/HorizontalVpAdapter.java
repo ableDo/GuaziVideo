@@ -46,7 +46,7 @@ public class HorizontalVpAdapter extends RecyclerView.Adapter<HorizontalVpAdapte
             tempPlayer.release();
         }
 
-        holder.videoPlayer.changeSourceAndPlay(getVideoUrl(position), getTitle(position), false);
+        holder.videoPlayer.changeSourceAndPlay(getVideoUrl(position), getTitle(position), false, true);
         Log.i(TAG, getVideoUrl(position));
         tempPlayer = holder.videoPlayer;
 

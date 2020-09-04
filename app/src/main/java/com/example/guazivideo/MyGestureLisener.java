@@ -179,7 +179,7 @@ public class MyGestureLisener extends GestureDetector.SimpleOnGestureListener {
 
             VideoInfo videoInfo = adapter.getVideoInfoByPosition(viewPager2.getCurrentItem());
             videoPlayer.release();
-            videoPlayer.changeSourceAndPlay(videoInfo.getShort_video_info().getVideo_1().getUrl(), videoInfo.getShort_title(), false);
+            videoPlayer.changeSourceAndPlay(videoInfo.getShort_video_info().getVideo_1().getUrl(), videoInfo.getShort_title(), false, true);
             isFullVideo = false;
         } else {
             //进入详情页
@@ -206,7 +206,7 @@ public class MyGestureLisener extends GestureDetector.SimpleOnGestureListener {
 
             VideoInfo videoInfo = adapter.getVideoInfoByPosition(viewPager2.getCurrentItem());
             videoPlayer.release();
-            videoPlayer.changeSourceAndPlay(videoInfo.getMovie_video_info().getVideo_1().getUrl(), videoInfo.getMovie_name(), true);
+            videoPlayer.changeSourceAndPlay(videoInfo.getMovie_video_info().getVideo_1().getUrl(), videoInfo.getMovie_name(), true, false);
             videoPlayer.getBackButton().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -217,5 +217,6 @@ public class MyGestureLisener extends GestureDetector.SimpleOnGestureListener {
         }
         isGesturesolving = false;
     }
+
 
 }

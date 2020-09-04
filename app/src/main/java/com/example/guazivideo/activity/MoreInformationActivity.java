@@ -2,10 +2,16 @@ package com.example.guazivideo.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -19,14 +25,20 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.guazivideo.R;
+import com.example.guazivideo.entity.Changer;
+import com.example.guazivideo.entity.Gesture;
 import com.example.guazivideo.mvp.base.BaseActivity;
 import com.example.guazivideo.entity.VideoInfo;
+import com.example.guazivideo.net.WebService;
+
 import org.tensorflow.lite.examples.classification.CameracCassificationInterface.CameraClassification;
 import org.tensorflow.lite.examples.classification.CameracCassificationInterface.ResultHandler;
 
 
 public class MoreInformationActivity extends BaseActivity {
     CameraClassification myDetectGesture = null;
+    private boolean isAsk = true;
+    private boolean isOpen = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +53,7 @@ public class MoreInformationActivity extends BaseActivity {
         if (actionBar != null){
             actionBar.hide();
         }
+        handler.post(task);
 
         setSystemUIVisible(false);
 
@@ -80,6 +93,7 @@ public class MoreInformationActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         myDetectGesture.endGestureDetect();
+        isAsk = false;
     }
 
     private void initDetector() {
@@ -120,15 +134,72 @@ public class MoreInformationActivity extends BaseActivity {
                 switch (msg.what) {
 
                     case ResultHandler.GESTURE_PALM: {
-                        Log.i("Gesture", "palm");
-                        Toast.makeText(MoreInformationActivity.this, "palm", Toast.LENGTH_LONG).show();
-
+                        if (isOpen) {
+                            Log.i("Gesture", "palm");
+                            Toast.makeText(MoreInformationActivity.this, "palm", Toast.LENGTH_LONG).show();
+                            finish();
+                        }
                         break;
                     }
                 }
             }
         }, MoreInformationActivity.this, R.id.more_container, R.layout.tfe_ic_camera_connection_fragment);
     }
+
+    private Handler handler = new Handler();
+
+    private Runnable task = new Runnable() {
+        public void run() {
+            // TODOAuto-generated method stub
+
+            if (isAsk) {
+                handler.postDelayed(this, 1000);//设置延迟时间，此处是5秒
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://39.106.7.119:8080/api/v1/user/")  //要访问的主机地址，注意以 /（斜线） 结束，不然可能会抛出异常
+                        .addConverterFactory(GsonConverterFactory.create()) //添加Gson
+                        .build();
+
+                WebService service = retrofit.create(WebService.class);
+
+                Call<Gesture> call = service.getGesture();
+
+                call.enqueue(new Callback<Gesture>() {
+                    @Override
+                    public void onResponse(Call<Gesture> call, Response<Gesture> response) {
+                        Gesture gesture = response.body();
+                        Log.i("gesture" , gesture.gesture + " ");
+                        if (gesture.gesture == ResultHandler.GESTURE_PALM) {
+                            Log.i("Gesture", "palm");
+                            Toast.makeText(MoreInformationActivity.this, "palm", Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Gesture> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
+
+
+                Call<Changer> call1 = service.getChangerStates();
+
+                call1.enqueue(new Callback<Changer>() {
+                    @Override
+                    public void onResponse(Call<Changer> call, Response<Changer> response) {
+                        Changer changer = response.body();
+                        Log.i("changer" , changer.isChangerOpen + " ");
+                        isOpen = changer.isChangerOpen;
+                    }
+
+                    @Override
+                    public void onFailure(Call<Changer> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
+            }
+        }
+    };
 
 }
 

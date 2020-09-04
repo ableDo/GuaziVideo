@@ -75,6 +75,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenter> implements Main
         GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
         videoPlayer.clickOnce();
         setSystemUIVisible(false);
+        mPresenter.startRequestChangerAndGesture();
         mPresenter.startDetector(R.id.main_container, R.layout.tfe_ic_camera_connection_fragment);
     }
 
@@ -88,6 +89,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenter> implements Main
         }
 
         mPresenter.stopDetector();
+        mPresenter.stopRequestChangerAndGesture();
     }
 
     @Override
@@ -109,7 +111,9 @@ public class MainActivity extends BaseMvpActivity<MainPresenter> implements Main
         mPresenter.attachView(this);
         OpeningStartAnimation openingStartAnimation = new OpeningStartAnimation.Builder(this)
                 .setDrawStategy(new LineDrawStrategy()) //设置动画效果
+                .setAppName("GuaziVideo")
                 .setAnimationFinishTime(START_TIME)
+                .setAppStatement("make watching easyer")
                 .create();
         openingStartAnimation.show(this);
         backGroundView = findViewById(R.id.main_background);

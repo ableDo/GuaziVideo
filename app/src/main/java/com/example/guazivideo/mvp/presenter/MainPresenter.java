@@ -40,6 +40,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     private String TAG = "camera";
     CameraClassification myDetectGesture = null;
     Context mContext;
+    boolean isAsk = true;
 
     private  Toast mytoast;
     public void showtoast(Context context, String text){
@@ -111,11 +112,13 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                         break;
                     }
                     case ResultHandler.GESTURE_OK: {
-                        Log.i(TAG, "ok");
-                        showtoast(mContext, "camera:ok");
-                        //Toast.makeText(mContext, "ok", Toast.LENGTH_LONG).show();
-                        mView.onGestureOk();
-                        break;
+                        if (isGestureOpen) {
+                            Log.i(TAG, "ok");
+                            showtoast(mContext, "camera:ok");
+                            //Toast.makeText(mContext, "ok", Toast.LENGTH_LONG).show();
+                            mView.onGestureOk();
+                            break;
+                        }
                     }
                     case ResultHandler.GESTURE_PALM: {
                         if (isGestureOpen) {
@@ -159,7 +162,13 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
 
     @Override
     public void startRequestChangerAndGesture() {
-        handler.postDelayed(task, 2000);
+        handler.post(task);
+        isAsk = true;
+    }
+
+    @Override
+    public void stopRequestChangerAndGesture() {
+        isAsk = false;
     }
 
     @Override
@@ -190,9 +199,11 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
         public void run() {
             // TODOAuto-generated method stub
 
-            handler.postDelayed(this, duration);//设置延迟时间，此处是5秒
-            //需要执行的代码
-            model.requestChangerAndGesture();
+            if (isAsk) {
+                handler.postDelayed(this, duration);//设置延迟时间，此处是5秒
+                model.requestChangerAndGesture();
+
+            }
         }
     };
 }

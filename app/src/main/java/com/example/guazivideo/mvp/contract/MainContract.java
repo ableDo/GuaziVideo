@@ -55,6 +55,8 @@ public interface MainContract {
 
         void startRequestChangerAndGesture();
 
+        void stopRequestChangerAndGesture();
+
         void onVideoGet(List<VideoInfo> videoInfos);
 
         void onrequestChangerStatesGet(boolean isOpen);
