@@ -11,7 +11,8 @@ import com.example.guazivideo.activity.MainActivity;
 import com.example.guazivideo.entity.Changer;
 import com.example.guazivideo.entity.Gesture;
 import com.example.guazivideo.entity.VideoInfo;
-import com.example.guazivideo.gestureinterface.GestureHandler;
+
+import org.tensorflow.lite.examples.classification.CameracCassificationInterface.ResultHandler;
 import com.example.guazivideo.mvp.contract.MainContract;
 import com.example.guazivideo.net.VideoService;
 import com.example.guazivideo.net.WebService;

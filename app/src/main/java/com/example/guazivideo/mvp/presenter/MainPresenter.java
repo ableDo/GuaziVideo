@@ -13,8 +13,11 @@ import com.example.guazivideo.R;
 import com.example.guazivideo.activity.MainActivity;
 import com.example.guazivideo.entity.Gesture;
 import com.example.guazivideo.entity.VideoInfo;
-import com.example.guazivideo.gestureinterface.DetectGesture;
-import com.example.guazivideo.gestureinterface.GestureHandler;
+
+import org.tensorflow.lite.examples.classification.CameracCassificationInterface.CameraClassification;
+import org.tensorflow.lite.examples.classification.CameracCassificationInterface.CameraClassification;
+import org.tensorflow.lite.examples.classification.CameracCassificationInterface.ResultHandler;
+
 import com.example.guazivideo.mvp.base.BaseActivity;
 import com.example.guazivideo.mvp.base.BasePresenter;
 import com.example.guazivideo.mvp.contract.MainContract;
@@ -33,7 +36,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     private static boolean flag = true;
     private static int duration = 500;
     private boolean isGestureOpen = true;
-    DetectGesture myDetectGesture = null;
+    CameraClassification myDetectGesture = null;
     Context mContext;
 
 
@@ -73,13 +76,13 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     @SuppressLint("HandlerLeak")
     private void startGestureDetect(View view) {
         if (myDetectGesture == null) {
-            myDetectGesture = new DetectGesture();
+            myDetectGesture = new CameraClassification();
         }
-        myDetectGesture.startGestureDetect(new GestureHandler() {
+        myDetectGesture.startGestureDetect(new ResultHandler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 switch (msg.what) {
-                    case GestureHandler.GESTURE_DOWN: {
+                    case ResultHandler.GESTURE_DOWN: {
                         if (isGestureOpen) {
                             Log.i("Gesture", "down");
                             Toast.makeText(mContext, "下滑", Toast.LENGTH_LONG).show();
@@ -87,7 +90,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                         }
                         break;
                     }
-                    case GestureHandler.GESTURE_UP: {
+                    case ResultHandler.GESTURE_UP: {
                         if (isGestureOpen) {
                             Log.i("Gesture", "up");
                             Toast.makeText(mContext, "上滑", Toast.LENGTH_LONG).show();
@@ -95,13 +98,13 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                         }
                         break;
                     }
-                    case GestureHandler.GESTURE_OK: {
+                    case ResultHandler.GESTURE_OK: {
                         Log.i("Gesture", "ok");
                         Toast.makeText(mContext, "ok", Toast.LENGTH_LONG).show();
                         mView.onGestureOk();
                         break;
                     }
-                    case GestureHandler.GESTURE_PALM: {
+                    case ResultHandler.GESTURE_PALM: {
                         if (isGestureOpen) {
                             Log.i("Gesture", "palm");
                             Toast.makeText(mContext, "palm", Toast.LENGTH_LONG).show();
@@ -111,7 +114,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                     }
                 }
             }
-        }, (BaseActivity) mContext, view);
+        }, (BaseActivity) mContext, R.id.container, R.layout.tfe_ic_camera_connection_fragment);
     }
 
     public void setTimer() {

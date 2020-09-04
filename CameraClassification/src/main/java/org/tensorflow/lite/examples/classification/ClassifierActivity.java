@@ -31,7 +31,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.List;
 
-import org.tensorflow.lite.examples.classification.GestureInterface.GestureHandler;
+import org.tensorflow.lite.examples.classification.CameracCassificationInterface.ResultHandler;
 import org.tensorflow.lite.examples.classification.env.BorderedText;
 import org.tensorflow.lite.examples.classification.env.Logger;
 import org.tensorflow.lite.examples.classification.tflite.Classifier;
@@ -52,7 +52,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
   /** Input image size of the model along y axis. */
   private int imageSizeY;
 
-  public ClassifierActivity(GestureHandler ghandler, Activity activity, int id, int layout){
+  public ClassifierActivity(ResultHandler ghandler, Activity activity, int id, int layout){
     super(ghandler, activity, id, layout);
   }
   @Override
@@ -110,13 +110,13 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
                 msg.obj = (Object) results.get(0).getTitle();
                 switch (results.get(0).getTitle()){
                   case "Up":
-                    msg.what = GestureHandler.GESTURE_UP;
+                    msg.what = ResultHandler.GESTURE_UP;
                     break;
                   case"Down":
-                    msg.what = GestureHandler.GESTURE_DOWN;
+                    msg.what = ResultHandler.GESTURE_DOWN;
                     break;
                   case "Palm":
-                    msg.what = GestureHandler.GESTURE_PALM;
+                    msg.what = ResultHandler.GESTURE_PALM;
                     break;
                 }
                 ui_handler.sendMessage(msg);

@@ -55,7 +55,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import org.tensorflow.lite.examples.classification.GestureInterface.GestureHandler;
+import org.tensorflow.lite.examples.classification.CameracCassificationInterface.ResultHandler;
 import org.tensorflow.lite.examples.classification.env.ImageUtils;
 import org.tensorflow.lite.examples.classification.env.Logger;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Device;
@@ -107,11 +107,11 @@ public abstract class CameraActivity extends AppCompatActivity
   private Device device = Device.CPU;
   private int numThreads = -1;
 
-  protected GestureHandler ui_handler;
+  protected ResultHandler ui_handler;
   protected Activity ui_acivity;
   protected int ui_id;
   protected int ui_layout;
-  public CameraActivity(GestureHandler ghandler, Activity activity, int id, int layout){
+  public CameraActivity(ResultHandler ghandler, Activity activity, int id, int layout){
     ui_handler = ghandler;
     ui_acivity = activity;
     ui_id = id;

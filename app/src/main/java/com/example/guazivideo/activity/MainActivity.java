@@ -31,8 +31,6 @@ import com.example.guazivideo.mvp.base.BaseActivity;
 import com.example.guazivideo.entity.Changer;
 import com.example.guazivideo.entity.Gesture;
 import com.example.guazivideo.entity.VideoInfo;
-import com.example.guazivideo.gestureinterface.DetectGesture;
-import org.tensorflow.lite.examples.classification.GestureInterface.GestureHandler;
 
 import com.example.guazivideo.mvp.base.BaseMvpActivity;
 import com.example.guazivideo.mvp.contract.MainContract;
@@ -44,6 +42,7 @@ import com.example.guazivideo.androidview.RotationLoadingView;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+import org.tensorflow.lite.examples.classification.CameracCassificationInterface.ResultHandler;
 
 public class MainActivity extends BaseMvpActivity<MainPresenter> implements MainContract.View{
 
@@ -150,25 +149,25 @@ public class MainActivity extends BaseMvpActivity<MainPresenter> implements Main
     @Override
     public void onGestureGet(Gesture gesture) {
         switch (gesture.gesture) {
-            case GestureHandler.GESTURE_UP: {
+            case ResultHandler.GESTURE_UP: {
                 Log.i("Gesture", "up");
                 Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
                 myGestureLisener.gestureUp();
                 break;
             }
-            case GestureHandler.GESTURE_DOWN: {
+            case ResultHandler.GESTURE_DOWN: {
                 Log.i("Gesture", "down");
                 Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
                 myGestureLisener.gestureDown();
                 break;
             }
-            case GestureHandler.GESTURE_OK: {
+            case ResultHandler.GESTURE_OK: {
                 Log.i("Gesture", "ok");
                 Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
                 myGestureLisener.gestureOK();
                 break;
             }
-            case GestureHandler.GESTURE_PALM: {
+            case ResultHandler.GESTURE_PALM: {
                 Log.i("Gesture", "palm");
                 Toast.makeText(MainActivity.this, "palm", Toast.LENGTH_LONG).show();
                 myGestureLisener.gesturePalm();

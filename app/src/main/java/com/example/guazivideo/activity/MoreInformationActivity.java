@@ -21,12 +21,12 @@ import com.bumptech.glide.Glide;
 import com.example.guazivideo.R;
 import com.example.guazivideo.mvp.base.BaseActivity;
 import com.example.guazivideo.entity.VideoInfo;
-import com.example.guazivideo.gestureinterface.DetectGesture;
-import org.tensorflow.lite.examples.classification.GestureInterface.GestureHandler;
+import org.tensorflow.lite.examples.classification.CameracCassificationInterface.CameraClassification;
+import org.tensorflow.lite.examples.classification.CameracCassificationInterface.ResultHandler;
 
 
 public class MoreInformationActivity extends BaseActivity {
-    DetectGesture myDetectGesture = null;
+    CameraClassification myDetectGesture = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,14 +112,14 @@ public class MoreInformationActivity extends BaseActivity {
     @SuppressLint("HandlerLeak")
     private void startGestureDetect() {
         if (myDetectGesture == null) {
-            myDetectGesture = new DetectGesture();
+            myDetectGesture = new CameraClassification();
         }
-        myDetectGesture.startGestureDetect(new GestureHandler() {
+        myDetectGesture.startGestureDetect(new ResultHandler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 switch (msg.what) {
 
-                    case GestureHandler.GESTURE_PALM: {
+                    case ResultHandler.GESTURE_PALM: {
                         Log.i("Gesture", "palm");
                         Toast.makeText(MoreInformationActivity.this, "palm", Toast.LENGTH_LONG).show();
 
