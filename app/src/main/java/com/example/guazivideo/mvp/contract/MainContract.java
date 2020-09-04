@@ -47,7 +47,7 @@ public interface MainContract {
 
         void stopTimer();
 
-        void startDetector(android.view.View view);
+        void startDetector(int id, int layout);
 
         void stopDetector();
 

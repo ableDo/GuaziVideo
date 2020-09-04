@@ -73,15 +73,18 @@ public class MainActivity extends BaseMvpActivity<MainPresenter> implements Main
         GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
         videoPlayer.clickOnce();
         setSystemUIVisible(false);
-        mPresenter.startDetector(findViewById(R.id.main_container));
+        mPresenter.startDetector(R.id.main_container, R.layout.tfe_ic_camera_connection_fragment);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
-        GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
-        videoPlayer.clickOnce();
+        if (adapter.getItemCount() > 0) {
+            RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
+            GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
+            videoPlayer.clickOnce();
+        }
+
         mPresenter.stopDetector();
     }
 
@@ -142,7 +145,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenter> implements Main
         backGroundView.setVisibility(View.INVISIBLE);
         loadingView.setVisibility(View.INVISIBLE);
         setSystemUIVisible(false);
-        mPresenter.startDetector(findViewById(R.id.main_container));
+        mPresenter.startDetector(R.id.main_container, R.layout.tfe_ic_camera_connection_fragment);
         initDetector();
     }
 

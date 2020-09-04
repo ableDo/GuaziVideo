@@ -74,7 +74,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
         }
     }
     @SuppressLint("HandlerLeak")
-    private void startGestureDetect(View view) {
+    private void startGestureDetect(int id, int layout) {
         if (myDetectGesture == null) {
             myDetectGesture = new CameraClassification();
         }
@@ -114,7 +114,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                     }
                 }
             }
-        }, (BaseActivity) mContext, R.id.container, R.layout.tfe_ic_camera_connection_fragment);
+        }, (BaseActivity) mContext, id, layout);
     }
 
     public void setTimer() {
@@ -129,8 +129,8 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     }
 
     @Override
-    public void startDetector(View view) {
-        startGestureDetect(view);
+    public void startDetector(int id, int layout) {
+        startGestureDetect(id, layout);
     }
 
     @Override
