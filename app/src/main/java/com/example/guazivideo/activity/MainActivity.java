@@ -55,6 +55,8 @@ public class MainActivity extends BaseMvpActivity<MainPresenter> implements Main
 
     private View backGroundView;
     private RotationLoadingView loadingView;
+    private Toast mytoast;
+
 
 
     @Override
@@ -154,25 +156,31 @@ public class MainActivity extends BaseMvpActivity<MainPresenter> implements Main
         switch (gesture.gesture) {
             case ResultHandler.GESTURE_UP: {
                 Log.i("Gesture", "up");
-                Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
+                mPresenter.showtoast(MainActivity.this, "上滑");
+                //Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
                 myGestureLisener.gestureUp();
                 break;
             }
             case ResultHandler.GESTURE_DOWN: {
                 Log.i("Gesture", "down");
-                Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
+
+                mPresenter.showtoast(MainActivity.this, "下滑");
+                //Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
                 myGestureLisener.gestureDown();
                 break;
             }
             case ResultHandler.GESTURE_OK: {
+
                 Log.i("Gesture", "ok");
-                Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
+                mPresenter.showtoast(MainActivity.this, "ok");
+                //Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
                 myGestureLisener.gestureOK();
                 break;
             }
             case ResultHandler.GESTURE_PALM: {
                 Log.i("Gesture", "palm");
-                Toast.makeText(MainActivity.this, "palm", Toast.LENGTH_LONG).show();
+                mPresenter.showtoast(MainActivity.this, "palm");
+                //Toast.makeText(MainActivity.this, "palm", Toast.LENGTH_LONG).show();
                 myGestureLisener.gesturePalm();
                 break;
             }

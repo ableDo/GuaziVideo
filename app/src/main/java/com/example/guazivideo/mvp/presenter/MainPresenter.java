@@ -2,6 +2,7 @@ package com.example.guazivideo.mvp.presenter;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -36,10 +37,19 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     private static boolean flag = true;
     private static int duration = 500;
     private boolean isGestureOpen = true;
+    private String TAG = "camera";
     CameraClassification myDetectGesture = null;
     Context mContext;
 
-
+    private  Toast mytoast;
+    public void showtoast(Context context, String text){
+        if (mytoast == null){
+            mytoast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+        }   else {
+            mytoast.setText(text);
+        }
+        mytoast.show();
+    }
     public MainPresenter() {
         model = new MainModel(this);
     }
@@ -84,30 +94,34 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                 switch (msg.what) {
                     case ResultHandler.GESTURE_DOWN: {
                         if (isGestureOpen) {
-                            Log.i("Gesture", "down");
-                            Toast.makeText(mContext, "下滑", Toast.LENGTH_LONG).show();
+                            Log.i(TAG, "down");
+                            showtoast(mContext, "camera:下滑");
+                            //Toast.makeText(mContext, "下滑", Toast.LENGTH_LONG).show();
                             mView.onGestureDown();
                         }
                         break;
                     }
                     case ResultHandler.GESTURE_UP: {
                         if (isGestureOpen) {
-                            Log.i("Gesture", "up");
-                            Toast.makeText(mContext, "上滑", Toast.LENGTH_LONG).show();
+                            Log.i(TAG, "up");
+                            showtoast(mContext, "camera:上滑");
+                           // Toast.makeText(mContext, "上滑", Toast.LENGTH_LONG).show();
                             mView.onGestureUp();
                         }
                         break;
                     }
                     case ResultHandler.GESTURE_OK: {
-                        Log.i("Gesture", "ok");
-                        Toast.makeText(mContext, "ok", Toast.LENGTH_LONG).show();
+                        Log.i(TAG, "ok");
+                        showtoast(mContext, "camera:ok");
+                        //Toast.makeText(mContext, "ok", Toast.LENGTH_LONG).show();
                         mView.onGestureOk();
                         break;
                     }
                     case ResultHandler.GESTURE_PALM: {
                         if (isGestureOpen) {
-                            Log.i("Gesture", "palm");
-                            Toast.makeText(mContext, "palm", Toast.LENGTH_LONG).show();
+                            Log.i(TAG, "palm");
+                            showtoast(mContext, "camera:palm");
+                            //Toast.makeText(mContext, "palm", Toast.LENGTH_LONG).show();
                             mView.onGesturePalm();
                         }
                         break;

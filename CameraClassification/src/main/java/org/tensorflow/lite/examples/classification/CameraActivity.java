@@ -106,7 +106,7 @@ public abstract class CameraActivity extends AppCompatActivity
   private Model model = Model.FLOAT_MOBILENET;
   private Device device = Device.CPU;
   private int numThreads = -1;
-
+  private Object mutex = new Object();
   protected ResultHandler ui_handler;
   protected Activity ui_acivity;
   protected int ui_id;
@@ -310,11 +310,13 @@ public abstract class CameraActivity extends AppCompatActivity
         return;
       }
 
-      if (isProcessingFrame) {
-        image.close();
-        return;
+      synchronized (mutex) {
+        if (isProcessingFrame) {
+          image.close();
+          return;
+        }
+        isProcessingFrame = true;
       }
-      isProcessingFrame = true;
       Trace.beginSection("imageAvailable");
       final Plane[] planes = image.getPlanes();
       fillBytes(planes, yuvBytes);
@@ -344,7 +346,9 @@ public abstract class CameraActivity extends AppCompatActivity
             @Override
             public void run() {
               image.close();
-              isProcessingFrame = false;
+              synchronized (mutex) {
+                isProcessingFrame = false;
+              }
             }
           };
 

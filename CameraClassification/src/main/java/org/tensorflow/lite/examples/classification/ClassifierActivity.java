@@ -105,7 +105,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
               lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
               LOGGER.v("Detect: %s", results);
 
-              if (results.get(0).getConfidence() > 0.85) {
+              if (results.get(0).getConfidence() > 0.9) {
                 Message msg = Message.obtain();
                 msg.obj = (Object) results.get(0).getTitle();
                 switch (results.get(0).getTitle()){
@@ -118,7 +118,10 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
                   case "Palm":
                     msg.what = ResultHandler.GESTURE_PALM;
                     break;
+                  case "Fist":
+                    msg.what = ResultHandler.GESTURE_OK;
                 }
+                System.out.println("msgmsgmsg" + msg.what);
                 ui_handler.sendMessage(msg);
                 try {
                   Thread.sleep(2000);
