@@ -1,4 +1,5 @@
 Up
 Down
+Fist
 Palm
 Nothing
