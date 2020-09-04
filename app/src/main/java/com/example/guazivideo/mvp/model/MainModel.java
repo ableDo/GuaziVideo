@@ -59,50 +59,7 @@ public class MainModel implements MainContract.Model {
         });
     }
 
-    @Override
-    public void requestChangerAndGesture() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://39.106.7.119:8080/api/v1/user/")  //要访问的主机地址，注意以 /（斜线） 结束，不然可能会抛出异常
-                .addConverterFactory(GsonConverterFactory.create()) //添加Gson
-                .build();
 
-        WebService service = retrofit.create(WebService.class);
-
-        Call<Gesture> call = service.getGesture();
-
-        call.enqueue(new Callback<Gesture>() {
-            @Override
-            public void onResponse(Call<Gesture> call, Response<Gesture> response) {
-                Gesture gesture = response.body();
-                Log.i("gesture" , gesture.gesture + " ");
-                mPresent.onGestureGet(gesture);
-            }
-
-            @Override
-            public void onFailure(Call<Gesture> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-
-
-        Call<Changer> call1 = service.getChangerStates();
-
-        call1.enqueue(new Callback<Changer>() {
-            @Override
-            public void onResponse(Call<Changer> call, Response<Changer> response) {
-                Changer changer = response.body();
-                mPresent.onrequestChangerStatesGet(changer.isChangerOpen);
-                Log.i("changer" , changer.isChangerOpen + " ");
-            }
-
-            @Override
-            public void onFailure(Call<Changer> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-
-
-    }
 
 
 }

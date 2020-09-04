@@ -10,8 +10,6 @@ public interface MainContract {
     interface Model {
         void requestVideo();
 
-        void requestChangerAndGesture();
-
     }
 
     interface View extends BaseView {
@@ -37,8 +35,6 @@ public interface MainContract {
 
         void onVideoGet(List<VideoInfo> videoInfos);
 
-        void onGestureGet(Gesture gesture);
-
     }
 
     interface Presenter {
@@ -53,15 +49,7 @@ public interface MainContract {
 
         void requestVideo();
 
-        void startRequestChangerAndGesture();
-
-        void stopRequestChangerAndGesture();
-
         void onVideoGet(List<VideoInfo> videoInfos);
-
-        void onrequestChangerStatesGet(boolean isOpen);
-
-        void onGestureGet(Gesture gesture);
 
     }
 }

@@ -55,7 +55,6 @@ public class MainActivity extends BaseMvpActivity<MainPresenter> implements Main
 
     private View backGroundView;
     private RotationLoadingView loadingView;
-    private Toast mytoast;
 
 
 
@@ -65,7 +64,6 @@ public class MainActivity extends BaseMvpActivity<MainPresenter> implements Main
         mPresenter.setTimer();
         initView();
         mPresenter.requestVideo();
-        mPresenter.startRequestChangerAndGesture();
     }
 
     @Override
@@ -75,7 +73,6 @@ public class MainActivity extends BaseMvpActivity<MainPresenter> implements Main
         GuaziPlayer videoPlayer = recyclerView.getChildAt(0).findViewById(R.id.video_player);
         videoPlayer.clickOnce();
         setSystemUIVisible(false);
-        mPresenter.startRequestChangerAndGesture();
         mPresenter.startDetector(R.id.main_container, R.layout.tfe_ic_camera_connection_fragment);
     }
 
@@ -89,7 +86,6 @@ public class MainActivity extends BaseMvpActivity<MainPresenter> implements Main
         }
 
         mPresenter.stopDetector();
-        mPresenter.stopRequestChangerAndGesture();
     }
 
     @Override
@@ -153,42 +149,6 @@ public class MainActivity extends BaseMvpActivity<MainPresenter> implements Main
         setSystemUIVisible(false);
         mPresenter.startDetector(R.id.main_container, R.layout.tfe_ic_camera_connection_fragment);
         initDetector();
-    }
-
-    @Override
-    public void onGestureGet(Gesture gesture) {
-        switch (gesture.gesture) {
-            case ResultHandler.GESTURE_UP: {
-                Log.i("Gesture", "up");
-                mPresenter.showtoast(MainActivity.this, "上滑");
-                //Toast.makeText(MainActivity.this, "上滑", Toast.LENGTH_LONG).show();
-                myGestureLisener.gestureUp();
-                break;
-            }
-            case ResultHandler.GESTURE_DOWN: {
-                Log.i("Gesture", "down");
-
-                mPresenter.showtoast(MainActivity.this, "下滑");
-                //Toast.makeText(MainActivity.this, "下滑", Toast.LENGTH_LONG).show();
-                myGestureLisener.gestureDown();
-                break;
-            }
-            case ResultHandler.GESTURE_OK: {
-
-                Log.i("Gesture", "ok");
-                mPresenter.showtoast(MainActivity.this, "ok");
-                //Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
-                myGestureLisener.gestureOK();
-                break;
-            }
-            case ResultHandler.GESTURE_PALM: {
-                Log.i("Gesture", "palm");
-                mPresenter.showtoast(MainActivity.this, "palm");
-                //Toast.makeText(MainActivity.this, "palm", Toast.LENGTH_LONG).show();
-                myGestureLisener.gesturePalm();
-                break;
-            }
-        }
     }
 
 

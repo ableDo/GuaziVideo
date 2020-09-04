@@ -160,31 +160,17 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
         model.requestVideo();
     }
 
-    @Override
-    public void startRequestChangerAndGesture() {
-        handler.post(task);
-        isAsk = true;
-    }
 
-    @Override
-    public void stopRequestChangerAndGesture() {
-        isAsk = false;
-    }
+
+
 
     @Override
     public void onVideoGet(List<VideoInfo> videoInfos) {
         mView.onVideoGet(videoInfos);
     }
 
-    @Override
-    public void onrequestChangerStatesGet(boolean isOpen) {
-        isGestureOpen = isOpen;
-    }
 
-    @Override
-    public void onGestureGet(Gesture gesture) {
-        mView.onGestureGet(gesture);
-    }
+
 
     @Override
     public void detachView() {
@@ -193,17 +179,5 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
         stopTimer();
     }
 
-    private Handler handler = new Handler();
 
-    private Runnable task = new Runnable() {
-        public void run() {
-            // TODOAuto-generated method stub
-
-            if (isAsk) {
-                handler.postDelayed(this, duration);//设置延迟时间，此处是5秒
-                model.requestChangerAndGesture();
-
-            }
-        }
-    };
 }

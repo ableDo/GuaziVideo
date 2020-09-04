@@ -37,7 +37,6 @@ import org.tensorflow.lite.examples.classification.CameracCassificationInterface
 
 public class MoreInformationActivity extends BaseActivity {
     CameraClassification myDetectGesture = null;
-    private boolean isAsk = true;
     private boolean isOpen = true;
 
     @Override
@@ -53,7 +52,6 @@ public class MoreInformationActivity extends BaseActivity {
         if (actionBar != null){
             actionBar.hide();
         }
-        handler.post(task);
 
         setSystemUIVisible(false);
 
@@ -93,7 +91,6 @@ public class MoreInformationActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         myDetectGesture.endGestureDetect();
-        isAsk = false;
     }
 
     private void initDetector() {
@@ -146,60 +143,6 @@ public class MoreInformationActivity extends BaseActivity {
         }, MoreInformationActivity.this, R.id.more_container, R.layout.tfe_ic_camera_connection_fragment);
     }
 
-    private Handler handler = new Handler();
-
-    private Runnable task = new Runnable() {
-        public void run() {
-            // TODOAuto-generated method stub
-
-            if (isAsk) {
-                handler.postDelayed(this, 1000);//设置延迟时间，此处是5秒
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://39.106.7.119:8080/api/v1/user/")  //要访问的主机地址，注意以 /（斜线） 结束，不然可能会抛出异常
-                        .addConverterFactory(GsonConverterFactory.create()) //添加Gson
-                        .build();
-
-                WebService service = retrofit.create(WebService.class);
-
-                Call<Gesture> call = service.getGesture();
-
-                call.enqueue(new Callback<Gesture>() {
-                    @Override
-                    public void onResponse(Call<Gesture> call, Response<Gesture> response) {
-                        Gesture gesture = response.body();
-                        Log.i("gesture" , gesture.gesture + " ");
-                        if (gesture.gesture == ResultHandler.GESTURE_PALM) {
-                            Log.i("Gesture", "palm");
-                            Toast.makeText(MoreInformationActivity.this, "palm", Toast.LENGTH_LONG).show();
-                            finish();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Gesture> call, Throwable t) {
-                        t.printStackTrace();
-                    }
-                });
-
-
-                Call<Changer> call1 = service.getChangerStates();
-
-                call1.enqueue(new Callback<Changer>() {
-                    @Override
-                    public void onResponse(Call<Changer> call, Response<Changer> response) {
-                        Changer changer = response.body();
-                        Log.i("changer" , changer.isChangerOpen + " ");
-                        isOpen = changer.isChangerOpen;
-                    }
-
-                    @Override
-                    public void onFailure(Call<Changer> call, Throwable t) {
-                        t.printStackTrace();
-                    }
-                });
-            }
-        }
-    };
 
 }
 
